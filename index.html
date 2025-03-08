@@ -1623,6 +1623,26 @@
             showMessage('Work items restored successfully!', 'success');
         }
 
+        //IMP🚫
+        // Clear all subjects
+        function clearSubjects() {
+            subjects = [];
+            localStorage.setItem('subjects', JSON.stringify(subjects));
+            loadSubjectsDropdown();
+            renderSubjectList();
+            showMessage('All subjects cleared successfully!', 'success');
+        }
+
+        //IMP🚫
+        function clearWorkTypes() {
+            workTypes = [];
+            localStorage.setItem('workTypes', JSON.stringify(workTypes));
+            loadWorkTypesDropdown();
+            renderWorkTypeList();
+            showMessage('All work types cleared successfully!', 'success');
+        }
+
+
         // Initialize app
         document.addEventListener('DOMContentLoaded', init);
     </script>
