@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Sync By Shivam Pandya</title>
     <link rel="shortcut icon" href="./FavIcon.svg" type="image/x-icon">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <style>
         :root {
             --primary: #3498db;
@@ -175,7 +174,7 @@
             background-color: #e67e22;
 
             &:hover {
-                background-color: rgb(255, 127, 41);
+                background-color: #ff7f29;
             }
         }
 
@@ -1551,56 +1550,6 @@
 
             // Show a message indicating success
             showMessage('All work items deleted successfully!', 'success');
-        }
-
-        // IMP🚫
-        function exportAllAsPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            // Add title
-            doc.setFontSize(18);
-            doc.text('Work Items', 14, 22);
-
-            // Add table headers
-            doc.setFontSize(12);
-            doc.text('Subject', 14, 32);
-            doc.text('Type', 64, 32);
-            doc.text('Work', 114, 32);
-            doc.text('Deadline', 164, 32);
-            doc.text('Status', 214, 32);
-
-            // Add table rows
-            let y = 42;
-            workItems.forEach(item => {
-                doc.text(item.subject, 14, y);
-                doc.text(item.workType, 64, y);
-                doc.text(item.workDescription, 114, y);
-                doc.text(formatDate(item.dateOfDeadline), 164, y);
-                doc.text(item.status, 214, y);
-                y += 10;
-            });
-
-            // Save the PDF
-            doc.save('Study_Sync_Export.pdf');
-        }
-
-        // Format date for display
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const day = date.getDate().toString().padStart(2, '0');
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
-        }
-
-        // Format date for display
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const day = date.getDate().toString().padStart(2, '0');
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
         }
 
         //IMP🚫
