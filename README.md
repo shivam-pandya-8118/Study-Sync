@@ -20,7 +20,6 @@
 - **CSS**: Enhances the styling for a clean and modern UI.
 - **JavaScript**: Adds interactivity and functionality to the application.
 - **Local Storage**: Stores user data persistently.
-- **jsPDF**: Enables exporting work items as a PDF document.
 
 ## How to Use
 
