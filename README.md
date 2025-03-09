@@ -13,7 +13,6 @@
 - **Status Update**: Change the status of tasks easily with a single click.
 - **Delete Work Items**: Remove tasks when they are no longer needed.
 - **Local Storage Support**: Saves data in local storage to ensure persistence between sessions.
-- **Export to PDF**: Ability to export all work items as a PDF report.
 
 ## Technologies Used
 
