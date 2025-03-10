@@ -519,6 +519,7 @@
                                 <th>Work</th>
                                 <th>Deadline</th>
                                 <th>Days Left</th>
+                                <th>Issuer Faculty</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -1112,7 +1113,7 @@
 
             if (itemsToShow.length === 0) {
                 const emptyRow = document.createElement('tr');
-                emptyRow.innerHTML = '<td colspan="7" style="text-align: center;">No work items found</td>';
+                emptyRow.innerHTML = '<td colspan="8" style="text-align: center;">No work items found</td>';
                 workTableBody.appendChild(emptyRow);
                 return;
             }
@@ -1152,21 +1153,22 @@
                 }
 
                 row.innerHTML = `
-            <td title="${subjectCode}">${subjectName}</td>
-            <td>${item.workType}</td>
-            <td>${item.workDescription}</td>
-            <td>${formatDate(item.dateOfDeadline)}</td>
-            <td>${daysLeftDisplay}</td>
-            <td>${statusBadge}</td>
-            <td>
-                <div class="btn-container">
-                    <button class="change-status-btn ${notStartedClass} action-btn" data-id="${item.id}" data-status="not-started">Not Started</button>
-                    <button class="change-status-btn ${pendingClass} action-btn" data-id="${item.id}" data-status="pending">Pending</button>
-                    <button class="change-status-btn ${completedClass} action-btn" data-id="${item.id}" data-status="completed">Completed</button>
-                    <button class="delete-work-btn btn-danger action-btn" data-id="${item.id}">Delete</button>
-                </div>
-            </td>
-        `;
+    <td title="${subjectCode}">${subjectName}</td>
+    <td>${item.workType}</td>
+    <td>${item.workDescription}</td>
+    <td>${formatDate(item.dateOfDeadline)}</td>
+    <td>${daysLeftDisplay}</td>
+    <td>${item.issuerName}</td> <!-- Add this new cell -->
+    <td>${statusBadge}</td>
+    <td>
+        <div class="btn-container">
+            <button class="change-status-btn ${notStartedClass} action-btn" data-id="${item.id}" data-status="not-started">Not Started</button>
+            <button class="change-status-btn ${pendingClass} action-btn" data-id="${item.id}" data-status="pending">Pending</button>
+            <button class="change-status-btn ${completedClass} action-btn" data-id="${item.id}" data-status="completed">Completed</button>
+            <button class="delete-work-btn btn-danger action-btn" data-id="${item.id}">Delete</button>
+        </div>
+    </td>
+`;
 
                 workTableBody.appendChild(row);
             });
