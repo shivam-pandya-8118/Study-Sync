@@ -1,4 +1,4 @@
-# Study Sync
+# Study Sync -> [View Live](https://shivam-pandya-8118.github.io/Study-Sync/)
 
 ## Overview
 
