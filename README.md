@@ -23,6 +23,8 @@
 
 ## How to Use
 
+1. You just need to [Click here](https://shivam-pandya-8118.github.io/Study-Sync/)
+            OR
 1. Open the `index.html` file in a web browser.
 2. Navigate between the different tabs (**Dashboard, Add Work, Edit Subjects, Edit Work Type**).
 3. Add new work items by selecting a subject, work type, entering details, and setting a deadline.
@@ -34,7 +36,7 @@
 
 ## Installation
 
-No installation is required. Simply open the `index.html` file in any modern web browser to start using the application.
+No installation is required. Simply open the `index.html` file in any modern web browser to start using the application or simply [Click here](https://shivam-pandya-8118.github.io/Study-Sync/).
 
 ## Future Enhancements
 
