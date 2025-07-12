@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Sync - Beginner's Guide</title>
+    <style>
+      :root {
+        --primary: #3498db;
+        --dark-primary: #2980b9;
+        --success: #2ecc71;
+        --warning: #f39c12;
+        --danger: #e74c3c;
+        --light: #ecf0f1;
+        --dark: #34495e;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 2rem;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--dark-primary)
+        );
+        color: white;
+        padding: 3rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          transparent 70%
+        );
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(180deg);
+        }
+      }
+
+      .header h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      .content {
+        padding: 3rem 2rem;
+      }
+
+      .section {
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: #f8f9ff;
+        border-radius: 15px;
+        border-left: 5px solid var(--primary);
+        transition: transform 0.3s ease;
+      }
+
+      .section:hover {
+        transform: translateY(-5px);
+      }
+
+      .section h2 {
+        color: var(--primary);
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .section h3 {
+        color: var(--dark);
+        font-size: 1.5rem;
+        margin: 1.5rem 0 1rem 0;
+      }
+
+      .section p {
+        line-height: 1.8;
+        margin-bottom: 1rem;
+        color: #555;
+      }
+
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+      }
+
+      .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+      }
+
+      .step-list {
+        counter-reset: step-counter;
+        list-style: none;
+        padding: 0;
+      }
+
+      .step-list li {
+        counter-increment: step-counter;
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        padding-left: 4rem;
+      }
+
+      .step-list li::before {
+        content: counter(step-counter);
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: var(--primary);
+        color: white;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+      }
+
+      .tip-box {
+        background: #e8f5e8;
+        border: 1px solid var(--success);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        position: relative;
+      }
+
+      .tip-box::before {
+        content: "💡";
+        position: absolute;
+        top: -10px;
+        left: 20px;
+        background: var(--success);
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+      }
+
+      .warning-box {
+        background: #fff8e1;
+        border: 1px solid var(--warning);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        position: relative;
+      }
+
+      .warning-box::before {
+        content: "⚠️";
+        position: absolute;
+        top: -10px;
+        left: 20px;
+        background: var(--warning);
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+      }
+
+      .back-btn {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--dark-primary)
+        );
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        margin: 2rem 0;
+      }
+
+      .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .status-badges {
+        display: flex;
+        gap: 1rem;
+        margin: 1rem 0;
+        flex-wrap: wrap;
+      }
+
+      .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .badge-notstarted {
+        background-color: #dfe4ea;
+        color: #576574;
+      }
+
+      .badge-pending {
+        background-color: #ffecad;
+        color: #ffc251;
+      }
+
+      .badge-completed {
+        background-color: #c4e6c3;
+        color: #2ecc71;
+      }
+
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .section {
+          padding: 1.5rem;
+        }
+
+        .feature-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .step-list li {
+          padding-left: 3rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>📚 Study Sync Guide</h1>
+        <p>Your complete guide to managing academic work efficiently</p>
+      </div>
+
+      <div class="content">
+        <!-- What is Study Sync -->
+        <div class="section">
+          <h2>🎯 What is Study Sync?</h2>
+          <p>
+            Study Sync is a comprehensive academic work management system
+            designed to help students organize, track, and manage their academic
+            assignments, projects, and tasks efficiently. It provides a
+            centralized platform to keep track of all your academic work with
+            deadlines, subjects, and progress status.
+          </p>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div class="feature-icon">📝</div>
+              <h3>Work Management</h3>
+              <p>
+                Add, edit, and track all your academic work items including
+                assignments, projects, lab manuals, and more.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">⏰</div>
+              <h3>Deadline Tracking</h3>
+              <p>
+                Never miss a deadline again with automatic calculation of days
+                remaining and overdue alerts.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <h3>Progress Monitoring</h3>
+              <p>
+                Track your progress with status indicators: Not Started,
+                Pending, and Completed.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Getting Started -->
+        <div class="section">
+          <h2>🚀 Getting Started</h2>
+          <h3>First Time Setup</h3>
+          <ol class="step-list">
+            <li>
+              <strong>Open Study Sync:</strong> Launch the application in your
+              web browser.
+            </li>
+            <li>
+              <strong>Review Default Subjects:</strong> The app comes pre-loaded
+              with common engineering subjects. You can modify these in the
+              "Edit Subjects" tab.
+            </li>
+            <li>
+              <strong>Review Work Types:</strong> Default work types like
+              "Assignment", "Lab Manual", "Project Report" are already
+              available.
+            </li>
+            <li>
+              <strong>Add Your First Work Item:</strong> Click on "Add Work" tab
+              to create your first assignment or project.
+            </li>
+          </ol>
+        </div>
+
+        <!-- Understanding the Interface -->
+        <div class="section">
+          <h2>🖥️ Understanding the Interface</h2>
+          <h3>Main Tabs</h3>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h3>📊 Dashboard</h3>
+              <p>
+                Your main workspace where you can view all work items, search,
+                filter, and manage status updates.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h3>➕ Add Work</h3>
+              <p>
+                Form to add new assignments, projects, or any academic work with
+                all necessary details.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h3>📚 Edit Subjects</h3>
+              <p>
+                Manage your subjects - add new ones, edit existing, or remove
+                unused subjects.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h3>🔧 Edit Work Type</h3>
+              <p>
+                Customize work types according to your academic needs -
+                assignments, projects, lab work, etc.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- How to Add Work -->
+        <div class="section">
+          <h2>📝 How to Add Work</h2>
+          <ol class="step-list">
+            <li>
+              <strong>Navigate to Add Work:</strong> Click on the "Add Work"
+              tab.
+            </li>
+            <li>
+              <strong>Select Subject:</strong> Choose from the dropdown list of
+              available subjects.
+            </li>
+            <li>
+              <strong>Choose Work Type:</strong> Select the type of work
+              (Assignment, Project, Lab Manual, etc.).
+            </li>
+            <li>
+              <strong>Describe the Work:</strong> Enter a detailed description
+              of what needs to be done.
+            </li>
+            <li>
+              <strong>Set Issue Date:</strong> When the work was assigned
+              (defaults to today).
+            </li>
+            <li><strong>Set Deadline:</strong> The due date for the work.</li>
+            <li>
+              <strong>Enter Faculty Name:</strong> Name of the professor or
+              instructor who assigned the work.
+            </li>
+            <li>
+              <strong>Student Name:</strong> Your name (pre-filled with "Shivam
+              Pandya").
+            </li>
+            <li><strong>Submit:</strong> Click "Add Work" to save the item.</li>
+          </ol>
+
+          <div class="tip-box">
+            <h4>Pro Tip:</h4>
+            <p>
+              Be specific in your work description. Instead of "Math
+              Assignment", write "Calculus Assignment - Chapter 5 Problems
+              1-20".
+            </p>
+          </div>
+        </div>
+
+        <!-- Managing Work Status -->
+        <div class="section">
+          <h2>📈 Managing Work Status</h2>
+          <h3>Status Types</h3>
+          <div class="status-badges">
+            <div class="badge badge-notstarted">Not Started</div>
+            <div class="badge badge-pending">Pending</div>
+            <div class="badge badge-completed">Completed</div>
+          </div>
+
+          <h3>How to Update Status</h3>
+          <ol class="step-list">
+            <li>
+              <strong>Go to Dashboard:</strong> All your work items are
+              displayed here.
+            </li>
+            <li>
+              <strong>Find Your Work:</strong> Use search or scroll to find the
+              specific work item.
+            </li>
+            <li>
+              <strong>Click Status Button:</strong> Click the appropriate status
+              button (Not Started, Pending, or Completed).
+            </li>
+            <li>
+              <strong>Confirm Change:</strong> A popup will ask for confirmation
+              - click "Confirm" to update.
+            </li>
+          </ol>
+
+          <div class="tip-box">
+            <h4>Status Guide:</h4>
+            <p>
+              <strong>Not Started:</strong> You haven't begun working on it
+              yet.<br />
+              <strong>Pending:</strong> You've started but haven't finished.<br />
+              <strong>Completed:</strong> The work is finished and ready for
+              submission.
+            </p>
+          </div>
+        </div>
+
+        <!-- Search and Filter -->
+        <div class="section">
+          <h2>🔍 Search and Filter</h2>
+          <h3>Search Functionality</h3>
+          <p>Use the search bar to quickly find specific work items by:</p>
+          <ul style="margin-left: 2rem; margin-bottom: 1rem">
+            <li>Subject name</li>
+            <li>Work type</li>
+            <li>Work description</li>
+            <li>Faculty name</li>
+          </ul>
+
+          <h3>Filter Options</h3>
+          <p>Use filter buttons to view work items by status:</p>
+          <ul style="margin-left: 2rem">
+            <li><strong>All:</strong> Shows all work items</li>
+            <li>
+              <strong>Not Started:</strong> Shows only items you haven't started
+            </li>
+            <li><strong>Pending:</strong> Shows work in progress</li>
+            <li><strong>Completed:</strong> Shows finished work</li>
+          </ul>
+        </div>
+
+        <!-- Understanding Deadlines -->
+        <div class="section">
+          <h2>⏰ Understanding Deadlines</h2>
+          <h3>Days Left Display</h3>
+          <p>The "Days Left" column shows:</p>
+          <ul style="margin-left: 2rem">
+            <li>
+              <strong>Green numbers:</strong> Days remaining until deadline
+            </li>
+            <li><strong>Orange "Tomorrow":</strong> Due tomorrow</li>
+            <li><strong>Orange "Due Today":</strong> Due today</li>
+            <li><strong>Red "Overdue":</strong> Past the deadline</li>
+          </ul>
+
+          <div class="warning-box">
+            <h4>Important:</h4>
+            <p>
+              Work items are automatically sorted by deadline - the most urgent
+              items appear at the top of the list.
+            </p>
+          </div>
+        </div>
+
+        <!-- Customizing Subjects and Work Types -->
+        <div class="section">
+          <h2>⚙️ Customizing Subjects and Work Types</h2>
+          <h3>Adding New Subjects</h3>
+          <ol class="step-list">
+            <li>
+              <strong>Go to Edit Subjects:</strong> Click the "Edit Subjects"
+              tab.
+            </li>
+            <li>
+              <strong>Enter Details:</strong> Fill in subject name and code.
+            </li>
+            <li><strong>Add Subject:</strong> Click "Add Subject" button.</li>
+          </ol>
+
+          <h3>Adding New Work Types</h3>
+          <ol class="step-list">
+            <li>
+              <strong>Go to Edit Work Type:</strong> Click the "Edit Work Type"
+              tab.
+            </li>
+            <li><strong>Enter Name:</strong> Type the new work type name.</li>
+            <li><strong>Add Type:</strong> Click "Add Work Type" button.</li>
+          </ol>
+
+          <div class="tip-box">
+            <h4>Customization Tips:</h4>
+            <p>
+              You can edit or delete existing subjects and work types, but be
+              careful - deleting items that are used in existing work items will
+              prevent deletion.
+            </p>
+          </div>
+        </div>
+
+        <!-- Best Practices -->
+        <div class="section">
+          <h2>✨ Best Practices</h2>
+          <ol class="step-list">
+            <li>
+              <strong>Regular Updates:</strong> Update your work status
+              regularly to maintain accuracy.
+            </li>
+            <li>
+              <strong>Detailed Descriptions:</strong> Write clear, specific
+              descriptions for each work item.
+            </li>
+            <li>
+              <strong>Set Realistic Deadlines:</strong> Enter accurate deadline
+              dates as provided by your instructors.
+            </li>
+            <li>
+              <strong>Review Daily:</strong> Check your dashboard daily to stay
+              on top of upcoming deadlines.
+            </li>
+            <li>
+              <strong>Use Filters:</strong> Use status filters to focus on what
+              needs attention.
+            </li>
+            <li>
+              <strong>Keep It Updated:</strong> Remove or mark as completed any
+              work that's finished.
+            </li>
+          </ol>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="section">
+          <h2>🔧 Troubleshooting</h2>
+          <h3>Common Issues</h3>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h3>Can't Delete Subject/Work Type</h3>
+              <p>
+                This happens when the item is being used in existing work items.
+                Complete or delete the related work items first.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h3>Lost Data</h3>
+              <p>
+                Data is stored in your browser's local storage. Clearing browser
+                data will remove all information.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h3>Status Not Updating</h3>
+              <p>
+                Make sure to click "Confirm" in the popup dialog when changing
+                status.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <a href="./index.html" class="back-btn">← Back to Study Sync</a>
+      </div>
+    </div>
+  </body>
+</html>
