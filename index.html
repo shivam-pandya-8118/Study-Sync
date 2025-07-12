@@ -1,884 +1,1006 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Study Sync By Shivam Pandya</title>
-    <link rel="shortcut icon" href="./FavIcon.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="./FavIcon.svg" type="image/x-icon" />
     <style>
-        :root {
-            --primary: #3498db;
-            --dark-primary: #2980b9;
-            --success: #2ecc71;
-            --warning: #f39c12;
-            --danger: #e74c3c;
-            --light: #ecf0f1;
-            --dark: #34495e;
+      :root {
+        --primary: #3498db;
+        --dark-primary: #2980b9;
+        --success: #2ecc71;
+        --warning: #f39c12;
+        --danger: #e74c3c;
+        --light: #ecf0f1;
+        --dark: #34495e;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f7fa;
+        color: #333;
+      }
+
+      header {
+        background-color: var(--primary);
+        color: white;
+        padding: 1rem;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+
+      .tabs {
+        display: flex;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .tab {
+        padding: 0.8rem 1.5rem;
+        cursor: pointer;
+        border: none;
+        background: none;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #666;
+        transition: all 0.3s;
+        position: relative;
+      }
+
+      .tab.active {
+        color: var(--dark);
+        border-bottom: 3px solid var(--primary);
+      }
+
+      .tab:hover:not(.active) {
+        color: var(--light);
+        border-bottom: 3px solid var(--dark-primary);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+        animation: fadeIn 0.5s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        to {
+          opacity: 1;
+        }
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #555;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+        transition: all 0.3s;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+      }
+
+      input:hover,
+      select:hover,
+      textarea:hover {
+        border-color: #bbb;
+      }
+
+      button {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      button:hover {
+        background-color: var(--dark-primary);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      .btn-success {
+        background-color: var(--success);
+
+        &:hover {
+          background-color: #27ae60;
+        }
+      }
+
+      .btn-warning {
+        background-color: #e67e22;
+
+        &:hover {
+          background-color: #ff7f29;
+        }
+      }
+
+      .btn-danger {
+        background-color: var(--danger);
+      }
+
+      .btn-danger:hover {
+        background-color: #c0392b;
+      }
+
+      .btn-secondary {
+        background-color: var(--warning);
+      }
+
+      .btn-secondary:hover {
+        background-color: var(--warning);
+      }
+
+      .btn-notstarted {
+        background-color: #2c3e50;
+
+        &:hover {
+          background-color: #34495e;
+        }
+      }
+
+      .btn-container {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+      }
+
+      /* Add margin to action buttons */
+      .action-btn {
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+
+      th,
+      td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        position: sticky;
+        top: 0;
+      }
+
+      tr {
+        transition: background-color 0.2s;
+      }
+
+      tr:hover {
+        background-color: #f0f4f8;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 0.25rem 0.6rem;
+        border-radius: 99px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .badge-notstarted {
+        background-color: #dfe4ea;
+        color: #576574;
+      }
+
+      .badge-pending {
+        background-color: #ffecad;
+        color: #ffc251;
+      }
+
+      .badge-completed {
+        background-color: #c4e6c3;
+        color: #2ecc71;
+      }
+
+      .search-bar {
+        display: flex;
+        margin-bottom: 1rem;
+        gap: 0.5rem;
+      }
+
+      .search-bar input {
+        flex: 1;
+      }
+
+      .filter-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .filter-btn {
+        color: #333;
+        padding: 0.5rem 1rem;
+        border-radius: 99px;
+        background: white;
+        border: 1px solid #ddd;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .filter-btn.active {
+        background-color: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      .filter-btn:hover:not(.active) {
+        background-color: var(--primary);
+      }
+
+      .message {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        display: none;
+        animation: fadeIn 0.5s;
+      }
+
+      .message-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .message-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .message-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .modal-content {
+        background-color: white;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: modalFadeIn 0.3s;
+      }
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
         }
 
-        body {
-            background-color: #f5f7fa;
-            color: #333;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
 
-        header {
-            background-color: var(--primary);
-            color: white;
-            padding: 1rem;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+      .close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #aaa;
+        transition: color 0.3s;
+      }
 
-        main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
+      .close-btn:hover {
+        color: #555;
+      }
 
+      .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .edit-subject-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid #eee;
+      }
+
+      .edit-subject-item:last-child {
+        border-bottom: none;
+      }
+
+      .edit-subject-content {
+        flex: 1;
+      }
+
+      .edit-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .subject-list,
+      .worktype-list {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      @media (max-width: 768px) {
         .tabs {
-            display: flex;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid #ddd;
+          flex-direction: column;
         }
 
         .tab {
-            padding: 0.8rem 1.5rem;
-            cursor: pointer;
-            border: none;
-            background: none;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #666;
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .tab.active {
-            color: var(--dark);
-            border-bottom: 3px solid var(--primary);
-        }
-
-        .tab:hover:not(.active) {
-            color: var(--light);
-            border-bottom: 3px solid var(--dark-primary);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #555;
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-
-        input:hover,
-        select:hover,
-        textarea:hover {
-            border-color: #bbb;
-        }
-
-        button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 0.8rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        button:hover {
-            background-color: var(--dark-primary);
-            transform: translateY(-1px);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        .btn-success {
-            background-color: var(--success);
-
-            &:hover {
-                background-color: #27ae60;
-            }
-        }
-
-        .btn-warning {
-            background-color: #e67e22;
-
-            &:hover {
-                background-color: #ff7f29;
-            }
-        }
-
-        .btn-danger {
-            background-color: var(--danger);
-        }
-
-        .btn-danger:hover {
-            background-color: #c0392b;
-        }
-
-        .btn-secondary {
-            background-color: var(--warning);
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--warning);
-        }
-
-        .btn-notstarted {
-            background-color: #2c3e50;
-
-            &:hover {
-                background-color: #34495e;
-            }
+          background: #e4e4e4;
+          margin-bottom: 5px;
+          padding: 0.6rem 1rem;
+          font-size: 0.9rem;
+          flex: 1;
+          text-align: center;
         }
 
         .btn-container {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
+          flex-direction: column;
+          width: 100%;
         }
 
-        /* Add margin to action buttons */
-        .action-btn {
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
+        .btn-container button {
+          width: 100%;
+          margin-bottom: 0.5rem;
         }
 
         th,
         td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-        }
-
-        tr {
-            transition: background-color 0.2s;
-        }
-
-        tr:hover {
-            background-color: #f0f4f8;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.6rem;
-            border-radius: 99px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .badge-notstarted {
-            background-color: #dfe4ea;
-            color: #576574;
-        }
-
-        .badge-pending {
-            background-color: #ffecad;
-            color: #ffc251;
-        }
-
-        .badge-completed {
-            background-color: #c4e6c3;
-            color: #2ecc71;
+          padding: 0.75rem 0.5rem;
+          font-size: 0.9rem;
         }
 
         .search-bar {
-            display: flex;
-            margin-bottom: 1rem;
-            gap: 0.5rem;
+          flex-direction: column;
         }
 
-        .search-bar input {
-            flex: 1;
+        .search-bar input,
+        .search-bar button {
+          width: 100%;
         }
 
-        .filter-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .filter-btn {
-            color: #333;
-            padding: 0.5rem 1rem;
-            border-radius: 99px;
-            background: white;
-            border: 1px solid #ddd;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .filter-btn.active {
-            background-color: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        .filter-btn:hover:not(.active) {
-            background-color: var(--primary);
-        }
-
-        .message {
-            padding: 1rem;
-            border-radius: 4px;
-            margin-bottom: 1rem;
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-
-        .message-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .message-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .message-info {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+        .card {
+          padding: 1rem;
         }
 
         .modal-content {
-            background-color: white;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
-            padding: 2rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            position: relative;
-            animation: modalFadeIn 0.3s;
+          padding: 1.5rem;
+          width: 95%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        th:nth-child(2),
+        td:nth-child(2) {
+          display: none;
         }
 
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        th,
+        td {
+          padding: 0.6rem 0.4rem;
+          font-size: 0.8rem;
         }
-
-        .close-btn {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #aaa;
-            transition: color 0.3s;
+      }
+      #GUIDE a {
+        z-index: 1;
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        background-color: var(--dark);
+        color: var(--light);
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: all 0.1s linear;
+        &:hover {
+          background-color: var(--dark-primary);
+          color: var(--light);
         }
-
-        .close-btn:hover {
-            color: #555;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .edit-subject-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border-bottom: 1px solid #eee;
-        }
-
-        .edit-subject-item:last-child {
-            border-bottom: none;
-        }
-
-        .edit-subject-content {
-            flex: 1;
-        }
-
-        .edit-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .subject-list,
-        .worktype-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        @media (max-width: 768px) {
-            .tabs {
-                flex-direction: column;
-            }
-
-            .tab {
-                background: #e4e4e4;
-                margin-bottom: 5px;
-                padding: 0.6rem 1rem;
-                font-size: 0.9rem;
-                flex: 1;
-                text-align: center;
-            }
-
-            .btn-container {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .btn-container button {
-                width: 100%;
-                margin-bottom: 0.5rem;
-            }
-
-            th,
-            td {
-                padding: 0.75rem 0.5rem;
-                font-size: 0.9rem;
-            }
-
-            .search-bar {
-                flex-direction: column;
-            }
-
-            .search-bar input,
-            .search-bar button {
-                width: 100%;
-            }
-
-            .card {
-                padding: 1rem;
-            }
-
-            .modal-content {
-                padding: 1.5rem;
-                width: 95%;
-            }
-        }
-
-        @media (max-width: 480px) {
-
-            th:nth-child(2),
-            td:nth-child(2) {
-                display: none;
-            }
-
-            th,
-            td {
-                padding: 0.6rem 0.4rem;
-                font-size: 0.8rem;
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <h1>Study Sync</h1>
+      <h1>Study Sync</h1>
+      <div id="GUIDE">
+        <a href="./USER_GUIDE.html">USER GUIDE</a>
+      </div>
     </header>
 
     <main>
-        <div class="tabs">
-            <button class="tab active" data-tab="dashboard">Dashboard</button>
-            <button class="tab" data-tab="add-work">Add Work</button>
-            <button class="tab" data-tab="edit-subject">Edit Subjects</button>
-            <button class="tab" data-tab="edit-worktype">Edit Work Type</button>
+      <div class="tabs">
+        <button class="tab active" data-tab="dashboard">Dashboard</button>
+        <button class="tab" data-tab="add-work">Add Work</button>
+        <button class="tab" data-tab="edit-subject">Edit Subjects</button>
+        <button class="tab" data-tab="edit-worktype">Edit Work Type</button>
+      </div>
+
+      <div id="message" class="message"></div>
+
+      <!-- Dashboard Tab -->
+      <div id="dashboard" class="tab-content active">
+        <div class="card">
+          <h2
+            style="
+              margin-bottom: 10px;
+              text-decoration: underline 2.5px;
+              text-underline-offset: 5px;
+            "
+          >
+            Your Work Items
+          </h2>
+
+          <div class="search-bar">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search for work items..."
+            />
+            <button id="searchBtn">Search</button>
+          </div>
+
+          <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="not-started">
+              Not Started
+            </button>
+            <button class="filter-btn" data-filter="pending">Pending</button>
+            <button class="filter-btn" data-filter="completed">
+              Completed
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table id="workTable">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Type</th>
+                  <th>Work</th>
+                  <th>Deadline</th>
+                  <th>Days Left</th>
+                  <th>Issuer Faculty</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="workTableBody">
+                <!-- Work items will be displayed here -->
+              </tbody>
+            </table>
+          </div>
         </div>
+      </div>
 
-        <div id="message" class="message"></div>
-
-        <!-- Dashboard Tab -->
-        <div id="dashboard" class="tab-content active">
-            <div class="card">
-                <h2 style="margin-bottom: 10px;text-decoration: underline 2.5px; text-underline-offset: 5px;">Your Work
-                    Items</h2>
-
-                <div class="search-bar">
-                    <input type="text" id="searchInput" placeholder="Search for work items...">
-                    <button id="searchBtn">Search</button>
-                </div>
-
-                <div class="filter-container">
-                    <button class="filter-btn active" data-filter="all">All</button>
-                    <button class="filter-btn" data-filter="not-started">Not Started</button>
-                    <button class="filter-btn" data-filter="pending">Pending</button>
-                    <button class="filter-btn" data-filter="completed">Completed</button>
-                </div>
-
-                <div class="table-responsive">
-                    <table id="workTable">
-                        <thead>
-                            <tr>
-                                <th>Subject</th>
-                                <th>Type</th>
-                                <th>Work</th>
-                                <th>Deadline</th>
-                                <th>Days Left</th>
-                                <th>Issuer Faculty</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="workTableBody">
-                            <!-- Work items will be displayed here -->
-                        </tbody>
-                    </table>
-                </div>
+      <!-- Add Work Tab -->
+      <div id="add-work" class="tab-content">
+        <div class="card">
+          <h2
+            style="text-decoration: underline 2.5px; text-underline-offset: 5px"
+          >
+            Add New Work
+          </h2>
+          <form id="workForm">
+            <div class="form-group">
+              <label style="margin-top: 1rem" for="subject"
+                >Subject Name/Code:</label
+              >
+              <select id="subject" required>
+                <option value="Not Valid">Select Subject</option>
+                <!-- Subjects will be loaded dynamically -->
+              </select>
             </div>
-        </div>
 
-        <!-- Add Work Tab -->
-        <div id="add-work" class="tab-content">
-            <div class="card">
-                <h2 style="text-decoration: underline 2.5px; text-underline-offset: 5px;">Add New Work</h2>
-                <form id="workForm">
-                    <div class="form-group">
-                        <label style="margin-top: 1rem;" for="subject">Subject Name/Code:</label>
-                        <select id="subject" required>
-                            <option value="Not Valid">Select Subject</option>
-                            <!-- Subjects will be loaded dynamically -->
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="workbookType">Work Type:</label>
-                        <select id="workbookType" required>
-                            <option value="Not Valid">Select Workbook Type</option>
-                            <!-- Work types will be loaded dynamically -->
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="workDescription">Work:</label>
-                        <textarea id="workDescription" rows="4" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="dateOfIssue">Date of Issue:</label>
-                        <input type="date" style="text-transform: uppercase;" id="dateOfIssue" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="dateOfDeadline">Date of Deadline:</label>
-                        <input type="date" style="text-transform: uppercase;" id="dateOfDeadline" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="issuerName">Issuer Faculty Name:</label>
-                        <input type="text" id="issuerName" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="studentName">Name of Student:</label>
-                        <input type="text" id="studentName" value="Shivam Pandya" required>
-                    </div>
-
-                    <button type="submit">Add Work</button>
-                </form>
+            <div class="form-group">
+              <label for="workbookType">Work Type:</label>
+              <select id="workbookType" required>
+                <option value="Not Valid">Select Workbook Type</option>
+                <!-- Work types will be loaded dynamically -->
+              </select>
             </div>
-        </div>
 
-        <!-- Edit Subject Tab -->
-        <div id="edit-subject" class="tab-content">
-            <div class="card">
-                <h2 style="text-decoration: underline 2.5px; text-underline-offset: 5px;">Edit Subjects</h2>
-                <div class="form-group">
-                    <label for="newSubjectName" style="margin-top: 10px">Subject Name:</label>
-                    <input type="text" id="newSubjectName" placeholder="e.g. Geography" required>
-                </div>
-                <div class="form-group">
-                    <label for="newSubjectCode">Subject Code:</label>
-                    <input type="text" id="newSubjectCode" placeholder="e.g. 574SW8941_24" required>
-                </div>
-                <button id="addSubjectBtn">Add Subject</button>
-
-                <hr style="margin: 1.5rem 0;">
-
-                <h3>Current Subjects</h3>
-                <div class="subject-list" id="subjectList">
-                    <!-- Subject list will be populated here -->
-                </div>
+            <div class="form-group">
+              <label for="workDescription">Work:</label>
+              <textarea id="workDescription" rows="4" required></textarea>
             </div>
-        </div>
 
-        <!-- Edit Work Type Tab -->
-        <div id="edit-worktype" class="tab-content">
-            <div class="card">
-                <h2 style="text-decoration: underline 2.5px; text-underline-offset: 5px;">Edit Work Types</h2>
-                <div class="form-group">
-                    <label for="newWorkType" style="margin-top: 10px">Work Type Name:</label>
-                    <input type="text" id="newWorkType" placeholder="e.g. Project Report" required>
-                </div>
-                <button id="addWorkTypeBtn">Add Work Type</button>
-
-                <hr style="margin: 1.5rem 0;">
-
-                <h3>Current Work Types</h3>
-                <div class="worktype-list" id="workTypeList">
-                    <!-- Work type list will be populated here -->
-                </div>
+            <div class="form-group">
+              <label for="dateOfIssue">Date of Issue:</label>
+              <input
+                type="date"
+                style="text-transform: uppercase"
+                id="dateOfIssue"
+                required
+              />
             </div>
+
+            <div class="form-group">
+              <label for="dateOfDeadline">Date of Deadline:</label>
+              <input
+                type="date"
+                style="text-transform: uppercase"
+                id="dateOfDeadline"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="issuerName">Issuer Faculty Name:</label>
+              <input type="text" id="issuerName" required />
+            </div>
+
+            <div class="form-group">
+              <label for="studentName">Name of Student:</label>
+              <input
+                type="text"
+                id="studentName"
+                value="Shivam Pandya"
+                required
+              />
+            </div>
+
+            <button type="submit">Add Work</button>
+          </form>
         </div>
+      </div>
+
+      <!-- Edit Subject Tab -->
+      <div id="edit-subject" class="tab-content">
+        <div class="card">
+          <h2
+            style="text-decoration: underline 2.5px; text-underline-offset: 5px"
+          >
+            Edit Subjects
+          </h2>
+          <div class="form-group">
+            <label for="newSubjectName" style="margin-top: 10px"
+              >Subject Name:</label
+            >
+            <input
+              type="text"
+              id="newSubjectName"
+              placeholder="e.g. Geography"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="newSubjectCode">Subject Code:</label>
+            <input
+              type="text"
+              id="newSubjectCode"
+              placeholder="e.g. 574SW8941_24"
+              required
+            />
+          </div>
+          <button id="addSubjectBtn">Add Subject</button>
+
+          <hr style="margin: 1.5rem 0" />
+
+          <h3>Current Subjects</h3>
+          <div class="subject-list" id="subjectList">
+            <!-- Subject list will be populated here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Work Type Tab -->
+      <div id="edit-worktype" class="tab-content">
+        <div class="card">
+          <h2
+            style="text-decoration: underline 2.5px; text-underline-offset: 5px"
+          >
+            Edit Work Types
+          </h2>
+          <div class="form-group">
+            <label for="newWorkType" style="margin-top: 10px"
+              >Work Type Name:</label
+            >
+            <input
+              type="text"
+              id="newWorkType"
+              placeholder="e.g. Project Report"
+              required
+            />
+          </div>
+          <button id="addWorkTypeBtn">Add Work Type</button>
+
+          <hr style="margin: 1.5rem 0" />
+
+          <h3>Current Work Types</h3>
+          <div class="worktype-list" id="workTypeList">
+            <!-- Work type list will be populated here -->
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- Status Change Modal -->
     <div id="statusModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Change Status</h2>
-            <p id="statusModalText">Are you sure you want to change the status?</p>
-            <div class="btn-container">
-                <button id="confirmStatusBtn">Confirm</button>
-                <button id="cancelStatusBtn">Cancel</button>
-            </div>
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Change Status</h2>
+        <p id="statusModalText">Are you sure you want to change the status?</p>
+        <div class="btn-container">
+          <button id="confirmStatusBtn">Confirm</button>
+          <button id="cancelStatusBtn">Cancel</button>
         </div>
+      </div>
     </div>
 
     <!-- Delete Confirmation Modal -->
     <div id="deleteModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Delete Work Item</h2>
-            <p>Are you sure you want to delete this work item? This action cannot be undone.</p>
-            <div class="btn-container">
-                <button id="confirmDeleteBtn" class="btn-danger">Delete</button>
-                <button id="cancelDeleteBtn">Cancel</button>
-            </div>
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Delete Work Item</h2>
+        <p>
+          Are you sure you want to delete this work item? This action cannot be
+          undone.
+        </p>
+        <div class="btn-container">
+          <button id="confirmDeleteBtn" class="btn-danger">Delete</button>
+          <button id="cancelDeleteBtn">Cancel</button>
         </div>
+      </div>
     </div>
 
     <!-- Edit Subject Modal -->
     <div id="editSubjectModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Edit Subject</h2>
-            <div class="form-group">
-                <label style="margin-top: 1rem;" for="editSubjectName">Subject Name:</label>
-                <input type="text" id="editSubjectName" required>
-            </div>
-            <div class="form-group">
-                <label for="editSubjectCode">Subject Code:</label>
-                <input type="text" id="editSubjectCode" required>
-            </div>
-            <div class="btn-container">
-                <button id="saveSubjectBtn">Save Changes</button>
-                <button id="cancelSubjectEditBtn">Cancel</button>
-            </div>
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Edit Subject</h2>
+        <div class="form-group">
+          <label style="margin-top: 1rem" for="editSubjectName"
+            >Subject Name:</label
+          >
+          <input type="text" id="editSubjectName" required />
         </div>
+        <div class="form-group">
+          <label for="editSubjectCode">Subject Code:</label>
+          <input type="text" id="editSubjectCode" required />
+        </div>
+        <div class="btn-container">
+          <button id="saveSubjectBtn">Save Changes</button>
+          <button id="cancelSubjectEditBtn">Cancel</button>
+        </div>
+      </div>
     </div>
 
     <!-- Edit Work Type Modal -->
     <div id="editWorkTypeModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Edit Work Type</h2>
-            <div class="form-group">
-                <label style="margin-top: 1rem;" for="editWorkTypeName">Work Type Name:</label>
-                <input type="text" id="editWorkTypeName" required>
-            </div>
-            <div class="btn-container">
-                <button id="saveWorkTypeBtn">Save Changes</button>
-                <button id="cancelWorkTypeEditBtn">Cancel</button>
-            </div>
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Edit Work Type</h2>
+        <div class="form-group">
+          <label style="margin-top: 1rem" for="editWorkTypeName"
+            >Work Type Name:</label
+          >
+          <input type="text" id="editWorkTypeName" required />
         </div>
+        <div class="btn-container">
+          <button id="saveWorkTypeBtn">Save Changes</button>
+          <button id="cancelWorkTypeEditBtn">Cancel</button>
+        </div>
+      </div>
     </div>
 
     <!-- Delete Subject Confirmation Modal -->
     <div id="deleteSubjectModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Delete Subject</h2>
-            <p>Are you sure you want to delete this subject? This may affect existing work items.</p>
-            <div class="btn-container">
-                <button id="confirmDeleteSubjectBtn" class="btn-danger">Delete</button>
-                <button id="cancelDeleteSubjectBtn">Cancel</button>
-            </div>
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Delete Subject</h2>
+        <p>
+          Are you sure you want to delete this subject? This may affect existing
+          work items.
+        </p>
+        <div class="btn-container">
+          <button id="confirmDeleteSubjectBtn" class="btn-danger">
+            Delete
+          </button>
+          <button id="cancelDeleteSubjectBtn">Cancel</button>
         </div>
+      </div>
     </div>
 
     <!-- Delete Work Type Confirmation Modal -->
     <div id="deleteWorkTypeModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h2>Delete Work Type</h2>
-            <p>Are you sure you want to delete this work type? This may affect existing work items.</p>
-            <div class="btn-container">
-                <button id="confirmDeleteWorkTypeBtn" class="btn-danger">Delete</button>
-                <button id="cancelDeleteWorkTypeBtn">Cancel</button>
-            </div>
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Delete Work Type</h2>
+        <p>
+          Are you sure you want to delete this work type? This may affect
+          existing work items.
+        </p>
+        <div class="btn-container">
+          <button id="confirmDeleteWorkTypeBtn" class="btn-danger">
+            Delete
+          </button>
+          <button id="cancelDeleteWorkTypeBtn">Cancel</button>
         </div>
+      </div>
     </div>
 
     <script>
-        // Store data in localStorage
-        let workItems = JSON.parse(localStorage.getItem('workItems')) || [];
+      // Store data in localStorage
+      let workItems = JSON.parse(localStorage.getItem("workItems")) || [];
 
-        // Default subjects and work types if not in localStorage
-        const defaultSubjects = [
-            { name: "Engineering Chemistry", code: "DI01000071" },
-            { name: "Applied Mathematics", code: "DI02000011" },
-            { name: "Environmental Sustainability", code: "DI02000051" },
-            { name: "Indian Constitution", code: "DI02000061" },
-            { name: "Electronics Workshop and Practice", code: "DI02000091" },
-            { name: "Scripting Language Python", code: "DI02000101" },
-            { name: "Contributor Personality Development", code: "DI02000131" },
-            { name: "Integrated Personality Development Course", code: "DI02000141" },
-            { name: "Essence of Indian Knowledge and Tradition", code: "DI02000151" }
-        ];
+      // Default subjects and work types if not in localStorage
+      const defaultSubjects = [
+        { name: "Engineering Chemistry", code: "DI01000071" },
+        { name: "Applied Mathematics", code: "DI02000011" },
+        { name: "Environmental Sustainability", code: "DI02000051" },
+        { name: "Indian Constitution", code: "DI02000061" },
+        { name: "Electronics Workshop and Practice", code: "DI02000091" },
+        { name: "Scripting Language Python", code: "DI02000101" },
+        { name: "Contributor Personality Development", code: "DI02000131" },
+        {
+          name: "Integrated Personality Development Course",
+          code: "DI02000141",
+        },
+        {
+          name: "Essence of Indian Knowledge and Tradition",
+          code: "DI02000151",
+        },
+      ];
 
-        const defaultWorkTypes = [
-            "Fairbook",
-            "Notes",
-            "Work/Textbook",
-            "Assignment",
-            "Lab Manual",
-            "Tutorial Book"
-        ];
+      const defaultWorkTypes = [
+        "Fairbook",
+        "Notes",
+        "Work/Textbook",
+        "Assignment",
+        "Lab Manual",
+        "Tutorial Book",
+      ];
 
-        // Initialize subjects and work types if not already in localStorage
-        let subjects = JSON.parse(localStorage.getItem('subjects')) || defaultSubjects;
-        let workTypes = JSON.parse(localStorage.getItem('workTypes')) || defaultWorkTypes;
+      // Initialize subjects and work types if not already in localStorage
+      let subjects =
+        JSON.parse(localStorage.getItem("subjects")) || defaultSubjects;
+      let workTypes =
+        JSON.parse(localStorage.getItem("workTypes")) || defaultWorkTypes;
 
-        // Save to localStorage
-        if (!localStorage.getItem('subjects')) {
-            localStorage.setItem('subjects', JSON.stringify(subjects));
-        }
+      // Save to localStorage
+      if (!localStorage.getItem("subjects")) {
+        localStorage.setItem("subjects", JSON.stringify(subjects));
+      }
 
-        if (!localStorage.getItem('workTypes')) {
-            localStorage.setItem('workTypes', JSON.stringify(workTypes));
-        }
+      if (!localStorage.getItem("workTypes")) {
+        localStorage.setItem("workTypes", JSON.stringify(workTypes));
+      }
 
-        // DOM Elements
-        const tabs = document.querySelectorAll('.tab');
-        const tabContents = document.querySelectorAll('.tab-content');
-        const workForm = document.getElementById('workForm');
-        const workTableBody = document.getElementById('workTableBody');
-        const searchInput = document.getElementById('searchInput');
-        const searchBtn = document.getElementById('searchBtn');
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        const messageEl = document.getElementById('message');
-        const statusModal = document.getElementById('statusModal');
-        const statusModalText = document.getElementById('statusModalText');
-        const confirmStatusBtn = document.getElementById('confirmStatusBtn');
-        const cancelStatusBtn = document.getElementById('cancelStatusBtn');
-        const deleteModal = document.getElementById('deleteModal');
-        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-        const closeButtons = document.querySelectorAll('.close-btn');
+      // DOM Elements
+      const tabs = document.querySelectorAll(".tab");
+      const tabContents = document.querySelectorAll(".tab-content");
+      const workForm = document.getElementById("workForm");
+      const workTableBody = document.getElementById("workTableBody");
+      const searchInput = document.getElementById("searchInput");
+      const searchBtn = document.getElementById("searchBtn");
+      const filterBtns = document.querySelectorAll(".filter-btn");
+      const messageEl = document.getElementById("message");
+      const statusModal = document.getElementById("statusModal");
+      const statusModalText = document.getElementById("statusModalText");
+      const confirmStatusBtn = document.getElementById("confirmStatusBtn");
+      const cancelStatusBtn = document.getElementById("cancelStatusBtn");
+      const deleteModal = document.getElementById("deleteModal");
+      const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+      const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+      const closeButtons = document.querySelectorAll(".close-btn");
 
-        // Subject edit elements
-        const subjectList = document.getElementById('subjectList');
-        const newSubjectName = document.getElementById('newSubjectName');
-        const newSubjectCode = document.getElementById('newSubjectCode');
-        const addSubjectBtn = document.getElementById('addSubjectBtn');
-        const editSubjectModal = document.getElementById('editSubjectModal');
-        const editSubjectName = document.getElementById('editSubjectName');
-        const editSubjectCode = document.getElementById('editSubjectCode');
-        const saveSubjectBtn = document.getElementById('saveSubjectBtn');
-        const cancelSubjectEditBtn = document.getElementById('cancelSubjectEditBtn');
-        const deleteSubjectModal = document.getElementById('deleteSubjectModal');
-        const confirmDeleteSubjectBtn = document.getElementById('confirmDeleteSubjectBtn');
-        const cancelDeleteSubjectBtn = document.getElementById('cancelDeleteSubjectBtn');
+      // Subject edit elements
+      const subjectList = document.getElementById("subjectList");
+      const newSubjectName = document.getElementById("newSubjectName");
+      const newSubjectCode = document.getElementById("newSubjectCode");
+      const addSubjectBtn = document.getElementById("addSubjectBtn");
+      const editSubjectModal = document.getElementById("editSubjectModal");
+      const editSubjectName = document.getElementById("editSubjectName");
+      const editSubjectCode = document.getElementById("editSubjectCode");
+      const saveSubjectBtn = document.getElementById("saveSubjectBtn");
+      const cancelSubjectEditBtn = document.getElementById(
+        "cancelSubjectEditBtn"
+      );
+      const deleteSubjectModal = document.getElementById("deleteSubjectModal");
+      const confirmDeleteSubjectBtn = document.getElementById(
+        "confirmDeleteSubjectBtn"
+      );
+      const cancelDeleteSubjectBtn = document.getElementById(
+        "cancelDeleteSubjectBtn"
+      );
 
-        // Work type edit elements
-        const workTypeList = document.getElementById('workTypeList');
-        const newWorkType = document.getElementById('newWorkType');
-        const addWorkTypeBtn = document.getElementById('addWorkTypeBtn');
-        const editWorkTypeModal = document.getElementById('editWorkTypeModal');
-        const editWorkTypeName = document.getElementById('editWorkTypeName');
-        const saveWorkTypeBtn = document.getElementById('saveWorkTypeBtn');
-        const cancelWorkTypeEditBtn = document.getElementById('cancelWorkTypeEditBtn');
-        const deleteWorkTypeModal = document.getElementById('deleteWorkTypeModal');
-        const confirmDeleteWorkTypeBtn = document.getElementById('confirmDeleteWorkTypeBtn');
-        const cancelDeleteWorkTypeBtn = document.getElementById('cancelDeleteWorkTypeBtn');
+      // Work type edit elements
+      const workTypeList = document.getElementById("workTypeList");
+      const newWorkType = document.getElementById("newWorkType");
+      const addWorkTypeBtn = document.getElementById("addWorkTypeBtn");
+      const editWorkTypeModal = document.getElementById("editWorkTypeModal");
+      const editWorkTypeName = document.getElementById("editWorkTypeName");
+      const saveWorkTypeBtn = document.getElementById("saveWorkTypeBtn");
+      const cancelWorkTypeEditBtn = document.getElementById(
+        "cancelWorkTypeEditBtn"
+      );
+      const deleteWorkTypeModal = document.getElementById(
+        "deleteWorkTypeModal"
+      );
+      const confirmDeleteWorkTypeBtn = document.getElementById(
+        "confirmDeleteWorkTypeBtn"
+      );
+      const cancelDeleteWorkTypeBtn = document.getElementById(
+        "cancelDeleteWorkTypeBtn"
+      );
 
-        // Variables for status and delete actions
-        let currentWorkItemId = null;
-        let currentAction = null;
-        let currentNewStatus = null;
-        let currentSubjectIndex = null;
-        let currentWorkTypeIndex = null;
+      // Variables for status and delete actions
+      let currentWorkItemId = null;
+      let currentAction = null;
+      let currentNewStatus = null;
+      let currentSubjectIndex = null;
+      let currentWorkTypeIndex = null;
 
-        // Function to calculate days left
-        function calculateDaysLeft(deadlineDate) {
-            const deadline = new Date(deadlineDate);
-            const today = new Date();
+      // Function to calculate days left
+      function calculateDaysLeft(deadlineDate) {
+        const deadline = new Date(deadlineDate);
+        const today = new Date();
 
-            // Reset time part for accurate day calculation
-            deadline.setHours(0, 0, 0, 0);
-            today.setHours(0, 0, 0, 0);
+        // Reset time part for accurate day calculation
+        deadline.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
 
-            const timeDiff = deadline.getTime() - today.getTime();
-            const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        const timeDiff = deadline.getTime() - today.getTime();
+        const daysLeft = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-            return daysLeft;
-        }
+        return daysLeft;
+      }
 
-        // Initialize the app
-        function init() {
-            // Set today's date as default for date inputs (but allow any date)
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('dateOfIssue').value = today;
+      // Initialize the app
+      function init() {
+        // Set today's date as default for date inputs (but allow any date)
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("dateOfIssue").value = today;
 
-            // Removed min value restrictions to allow earlier dates
-            // document.getElementById('dateOfIssue').min = today;
-            // document.getElementById('dateOfDeadline').min = today;
+        // Removed min value restrictions to allow earlier dates
+        // document.getElementById('dateOfIssue').min = today;
+        // document.getElementById('dateOfDeadline').min = today;
 
-            // Load subjects and work types into dropdowns
-            loadSubjectsDropdown();
-            loadWorkTypesDropdown();
+        // Load subjects and work types into dropdowns
+        loadSubjectsDropdown();
+        loadWorkTypesDropdown();
 
-            // Load subject and work type lists for edit tabs
-            renderSubjectList();
-            renderWorkTypeList();
+        // Load subject and work type lists for edit tabs
+        renderSubjectList();
+        renderWorkTypeList();
 
-            // Render work items
-            renderWorkItems();
+        // Render work items
+        renderWorkItems();
 
-            // Set up event listeners
-            setupEventListeners();
-        }
+        // Set up event listeners
+        setupEventListeners();
+      }
 
-        // Load subjects into dropdown
-        function loadSubjectsDropdown() {
-            const subjectSelect = document.getElementById('subject');
-            subjectSelect.innerHTML = '<option value="Not Valid">Select Subject</option>';
+      // Load subjects into dropdown
+      function loadSubjectsDropdown() {
+        const subjectSelect = document.getElementById("subject");
+        subjectSelect.innerHTML =
+          '<option value="Not Valid">Select Subject</option>';
 
-            subjects.forEach(subject => {
-                const option = document.createElement('option');
-                option.value = `${subject.name}/${subject.code}`;
-                option.textContent = `${subject.name}/${subject.code}`;
-                subjectSelect.appendChild(option);
-            });
-        }
+        subjects.forEach((subject) => {
+          const option = document.createElement("option");
+          option.value = `${subject.name}/${subject.code}`;
+          option.textContent = `${subject.name}/${subject.code}`;
+          subjectSelect.appendChild(option);
+        });
+      }
 
-        // Load work types into dropdown
-        function loadWorkTypesDropdown() {
-            const workTypeSelect = document.getElementById('workbookType');
-            workTypeSelect.innerHTML = '<option value="Not Valid">Select Workbook Type</option>';
+      // Load work types into dropdown
+      function loadWorkTypesDropdown() {
+        const workTypeSelect = document.getElementById("workbookType");
+        workTypeSelect.innerHTML =
+          '<option value="Not Valid">Select Workbook Type</option>';
 
-            workTypes.forEach(type => {
-                const option = document.createElement('option');
-                option.value = type;
-                option.textContent = type;
-                workTypeSelect.appendChild(option);
-            });
-        }
+        workTypes.forEach((type) => {
+          const option = document.createElement("option");
+          option.value = type;
+          option.textContent = type;
+          workTypeSelect.appendChild(option);
+        });
+      }
 
-        // Render subject list in edit tab
-        function renderSubjectList() {
-            subjectList.innerHTML = '';
+      // Render subject list in edit tab
+      function renderSubjectList() {
+        subjectList.innerHTML = "";
 
-            subjects.forEach((subject, index) => {
-                const subjectItem = document.createElement('div');
-                subjectItem.className = 'edit-subject-item';
+        subjects.forEach((subject, index) => {
+          const subjectItem = document.createElement("div");
+          subjectItem.className = "edit-subject-item";
 
-                subjectItem.innerHTML = `
+          subjectItem.innerHTML = `
             <div class="edit-subject-content">
                 <strong>${subject.name}</strong><br>
                 <small>Code: ${subject.code}</small>
@@ -889,28 +1011,28 @@
             </div>
         `;
 
-                subjectList.appendChild(subjectItem);
-            });
+          subjectList.appendChild(subjectItem);
+        });
 
-            // Add event listeners
-            document.querySelectorAll('.edit-subject-btn').forEach(btn => {
-                btn.addEventListener('click', handleEditSubject);
-            });
+        // Add event listeners
+        document.querySelectorAll(".edit-subject-btn").forEach((btn) => {
+          btn.addEventListener("click", handleEditSubject);
+        });
 
-            document.querySelectorAll('.delete-subject-btn').forEach(btn => {
-                btn.addEventListener('click', handleDeleteSubject);
-            });
-        }
+        document.querySelectorAll(".delete-subject-btn").forEach((btn) => {
+          btn.addEventListener("click", handleDeleteSubject);
+        });
+      }
 
-        // Render work type list in edit tab
-        function renderWorkTypeList() {
-            workTypeList.innerHTML = '';
+      // Render work type list in edit tab
+      function renderWorkTypeList() {
+        workTypeList.innerHTML = "";
 
-            workTypes.forEach((type, index) => {
-                const workTypeItem = document.createElement('div');
-                workTypeItem.className = 'edit-subject-item';
+        workTypes.forEach((type, index) => {
+          const workTypeItem = document.createElement("div");
+          workTypeItem.className = "edit-subject-item";
 
-                workTypeItem.innerHTML = `
+          workTypeItem.innerHTML = `
             <div class="edit-subject-content">
                 <strong>${type}</strong>
             </div>
@@ -920,239 +1042,260 @@
             </div>
         `;
 
-                workTypeList.appendChild(workTypeItem);
-            });
+          workTypeList.appendChild(workTypeItem);
+        });
 
-            // Add event listeners
-            document.querySelectorAll('.edit-worktype-btn').forEach(btn => {
-                btn.addEventListener('click', handleEditWorkType);
-            });
+        // Add event listeners
+        document.querySelectorAll(".edit-worktype-btn").forEach((btn) => {
+          btn.addEventListener("click", handleEditWorkType);
+        });
 
-            document.querySelectorAll('.delete-worktype-btn').forEach(btn => {
-                btn.addEventListener('click', handleDeleteWorkType);
+        document.querySelectorAll(".delete-worktype-btn").forEach((btn) => {
+          btn.addEventListener("click", handleDeleteWorkType);
+        });
+      }
+
+      // Set up event listeners
+      function setupEventListeners() {
+        // Tab switching
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            tabs.forEach((t) => t.classList.remove("active"));
+            tab.classList.add("active");
+
+            const tabId = tab.getAttribute("data-tab");
+            tabContents.forEach((content) => {
+              content.classList.remove("active");
             });
+            document.getElementById(tabId).classList.add("active");
+          });
+        });
+
+        // Work form submission
+        workForm.addEventListener("submit", handleWorkFormSubmit);
+
+        // Search functionality
+        searchBtn.addEventListener("click", handleSearch);
+        searchInput.addEventListener("keyup", (e) => {
+          if (e.key === "Enter") {
+            handleSearch();
+          }
+        });
+
+        // Filter buttons
+        filterBtns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            filterBtns.forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            const filter = btn.getAttribute("data-filter");
+            filterWorkItems(filter);
+          });
+        });
+
+        // Modal close buttons
+        closeButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            statusModal.style.display = "none";
+            deleteModal.style.display = "none";
+            editSubjectModal.style.display = "none";
+            editWorkTypeModal.style.display = "none";
+            deleteSubjectModal.style.display = "none";
+            deleteWorkTypeModal.style.display = "none";
+          });
+        });
+
+        // Status modal buttons
+        confirmStatusBtn.addEventListener("click", confirmStatusChange);
+        cancelStatusBtn.addEventListener("click", () => {
+          statusModal.style.display = "none";
+        });
+
+        // Delete modal buttons
+        confirmDeleteBtn.addEventListener("click", confirmDelete);
+        cancelDeleteBtn.addEventListener("click", () => {
+          deleteModal.style.display = "none";
+        });
+
+        // Subject buttons
+        addSubjectBtn.addEventListener("click", handleAddSubject);
+        saveSubjectBtn.addEventListener("click", saveSubjectEdit);
+        cancelSubjectEditBtn.addEventListener("click", () => {
+          editSubjectModal.style.display = "none";
+        });
+        confirmDeleteSubjectBtn.addEventListener("click", confirmDeleteSubject);
+        cancelDeleteSubjectBtn.addEventListener("click", () => {
+          deleteSubjectModal.style.display = "none";
+        });
+
+        // Work type buttons
+        addWorkTypeBtn.addEventListener("click", handleAddWorkType);
+        saveWorkTypeBtn.addEventListener("click", saveWorkTypeEdit);
+        cancelWorkTypeEditBtn.addEventListener("click", () => {
+          editWorkTypeModal.style.display = "none";
+        });
+        confirmDeleteWorkTypeBtn.addEventListener(
+          "click",
+          confirmDeleteWorkType
+        );
+        cancelDeleteWorkTypeBtn.addEventListener("click", () => {
+          deleteWorkTypeModal.style.display = "none";
+        });
+
+        // Add global click event to close modals when clicking outside
+        window.addEventListener("click", (e) => {
+          if (e.target === statusModal) statusModal.style.display = "none";
+          if (e.target === deleteModal) deleteModal.style.display = "none";
+          if (e.target === editSubjectModal)
+            editSubjectModal.style.display = "none";
+          if (e.target === editWorkTypeModal)
+            editWorkTypeModal.style.display = "none";
+          if (e.target === deleteSubjectModal)
+            deleteSubjectModal.style.display = "none";
+          if (e.target === deleteWorkTypeModal)
+            deleteWorkTypeModal.style.display = "none";
+        });
+
+        // Use event delegation for action buttons in the table
+        workTableBody.addEventListener("click", function (e) {
+          // Handle status change buttons
+          if (e.target.classList.contains("change-status-btn")) {
+            handleStatusChange(e);
+          }
+
+          // Handle delete buttons
+          if (e.target.classList.contains("delete-work-btn")) {
+            handleDelete(e);
+          }
+        });
+      }
+
+      // Handle work form submission
+      function handleWorkFormSubmit(e) {
+        e.preventDefault();
+
+        const subject = document.getElementById("subject").value;
+        const workType = document.getElementById("workbookType").value;
+        const workDescription =
+          document.getElementById("workDescription").value;
+        const dateOfIssue = document.getElementById("dateOfIssue").value;
+        const dateOfDeadline = document.getElementById("dateOfDeadline").value;
+        const issuerName = document.getElementById("issuerName").value;
+        const studentName = document.getElementById("studentName").value;
+
+        // Validate form
+        if (
+          subject === "Not Valid" ||
+          workType === "Not Valid" ||
+          !workDescription ||
+          !dateOfIssue ||
+          !dateOfDeadline ||
+          !issuerName ||
+          !studentName
+        ) {
+          showMessage("Please fill all fields correctly.", "error");
+          return;
         }
 
-        // Set up event listeners
-        function setupEventListeners() {
-            // Tab switching
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
+        // Create work item
+        const newWorkItem = {
+          id: Date.now().toString(),
+          subject,
+          workType,
+          workDescription,
+          dateOfIssue,
+          dateOfDeadline,
+          issuerName,
+          studentName,
+          status: "not-started",
+          createdAt: new Date().toISOString(),
+        };
 
-                    const tabId = tab.getAttribute('data-tab');
-                    tabContents.forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    document.getElementById(tabId).classList.add('active');
-                });
-            });
+        // Add to array and save
+        workItems.push(newWorkItem);
+        saveWorkItems();
 
-            // Work form submission
-            workForm.addEventListener('submit', handleWorkFormSubmit);
+        // Reset form
+        workForm.reset();
+        document.getElementById("dateOfIssue").value = new Date()
+          .toISOString()
+          .split("T")[0];
+        document.getElementById("studentName").value = "Shivam Pandya";
 
-            // Search functionality
-            searchBtn.addEventListener('click', handleSearch);
-            searchInput.addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') {
-                    handleSearch();
-                }
-            });
+        // Show success message
+        showMessage("Work item added successfully!", "success");
 
-            // Filter buttons
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    filterBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    const filter = btn.getAttribute('data-filter');
-                    filterWorkItems(filter);
-                });
-            });
+        // Switch to dashboard tab
+        tabs[0].click();
+      }
 
-            // Modal close buttons
-            closeButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    statusModal.style.display = 'none';
-                    deleteModal.style.display = 'none';
-                    editSubjectModal.style.display = 'none';
-                    editWorkTypeModal.style.display = 'none';
-                    deleteSubjectModal.style.display = 'none';
-                    deleteWorkTypeModal.style.display = 'none';
-                });
-            });
+      // Save work items to localStorage
+      function saveWorkItems() {
+        localStorage.setItem("workItems", JSON.stringify(workItems));
+        renderWorkItems();
+      }
 
-            // Status modal buttons
-            confirmStatusBtn.addEventListener('click', confirmStatusChange);
-            cancelStatusBtn.addEventListener('click', () => {
-                statusModal.style.display = 'none';
-            });
+      // Render work items in table
+      function renderWorkItems(filteredItems) {
+        // Clear existing rows
+        workTableBody.innerHTML = "";
 
-            // Delete modal buttons
-            confirmDeleteBtn.addEventListener('click', confirmDelete);
-            cancelDeleteBtn.addEventListener('click', () => {
-                deleteModal.style.display = 'none';
-            });
+        // Items to display (filtered or all)
+        const itemsToShow = filteredItems || workItems;
 
-            // Subject buttons
-            addSubjectBtn.addEventListener('click', handleAddSubject);
-            saveSubjectBtn.addEventListener('click', saveSubjectEdit);
-            cancelSubjectEditBtn.addEventListener('click', () => {
-                editSubjectModal.style.display = 'none';
-            });
-            confirmDeleteSubjectBtn.addEventListener('click', confirmDeleteSubject);
-            cancelDeleteSubjectBtn.addEventListener('click', () => {
-                deleteSubjectModal.style.display = 'none';
-            });
+        // Sort by deadline (closest first)
+        itemsToShow.sort((a, b) => {
+          const dateA = new Date(a.dateOfDeadline);
+          const dateB = new Date(b.dateOfDeadline);
+          return dateA - dateB;
+        });
 
-            // Work type buttons
-            addWorkTypeBtn.addEventListener('click', handleAddWorkType);
-            saveWorkTypeBtn.addEventListener('click', saveWorkTypeEdit);
-            cancelWorkTypeEditBtn.addEventListener('click', () => {
-                editWorkTypeModal.style.display = 'none';
-            });
-            confirmDeleteWorkTypeBtn.addEventListener('click', confirmDeleteWorkType);
-            cancelDeleteWorkTypeBtn.addEventListener('click', () => {
-                deleteWorkTypeModal.style.display = 'none';
-            });
-
-            // Add global click event to close modals when clicking outside
-            window.addEventListener('click', (e) => {
-                if (e.target === statusModal) statusModal.style.display = 'none';
-                if (e.target === deleteModal) deleteModal.style.display = 'none';
-                if (e.target === editSubjectModal) editSubjectModal.style.display = 'none';
-                if (e.target === editWorkTypeModal) editWorkTypeModal.style.display = 'none';
-                if (e.target === deleteSubjectModal) deleteSubjectModal.style.display = 'none';
-                if (e.target === deleteWorkTypeModal) deleteWorkTypeModal.style.display = 'none';
-            });
-
-            // Use event delegation for action buttons in the table
-            workTableBody.addEventListener('click', function (e) {
-                // Handle status change buttons
-                if (e.target.classList.contains('change-status-btn')) {
-                    handleStatusChange(e);
-                }
-
-                // Handle delete buttons
-                if (e.target.classList.contains('delete-work-btn')) {
-                    handleDelete(e);
-                }
-            });
+        if (itemsToShow.length === 0) {
+          const emptyRow = document.createElement("tr");
+          emptyRow.innerHTML =
+            '<td colspan="8" style="text-align: center;">No work items found</td>';
+          workTableBody.appendChild(emptyRow);
+          return;
         }
 
-        // Handle work form submission
-        function handleWorkFormSubmit(e) {
-            e.preventDefault();
+        // Create table rows
+        itemsToShow.forEach((item) => {
+          const daysLeft = calculateDaysLeft(item.dateOfDeadline);
+          const subjectParts = item.subject.split("/");
+          const subjectName = subjectParts[0];
+          const subjectCode = subjectParts[1];
 
-            const subject = document.getElementById('subject').value;
-            const workType = document.getElementById('workbookType').value;
-            const workDescription = document.getElementById('workDescription').value;
-            const dateOfIssue = document.getElementById('dateOfIssue').value;
-            const dateOfDeadline = document.getElementById('dateOfDeadline').value;
-            const issuerName = document.getElementById('issuerName').value;
-            const studentName = document.getElementById('studentName').value;
+          const row = document.createElement("tr");
 
-            // Validate form
-            if (subject === 'Not Valid' || workType === 'Not Valid' ||
-                !workDescription || !dateOfIssue || !dateOfDeadline ||
-                !issuerName || !studentName) {
-                showMessage('Please fill all fields correctly.', 'error');
-                return;
-            }
+          // Status badge
+          let statusBadge = "";
+          if (item.status === "not-started") {
+            statusBadge =
+              '<span class="badge badge-notstarted">Not Started</span>';
+          } else if (item.status === "pending") {
+            statusBadge = '<span class="badge badge-pending">Pending</span>';
+          } else if (item.status === "completed") {
+            statusBadge =
+              '<span class="badge badge-completed">Completed</span>';
+          }
 
-            // Create work item
-            const newWorkItem = {
-                id: Date.now().toString(),
-                subject,
-                workType,
-                workDescription,
-                dateOfIssue,
-                dateOfDeadline,
-                issuerName,
-                studentName,
-                status: 'not-started',
-                createdAt: new Date().toISOString()
-            };
+          // Status button classes
+          const notStartedClass =
+            item.status === "not-started" ? "btn-notstarted" : "";
+          const pendingClass = item.status === "pending" ? "btn-warning" : "";
+          const completedClass =
+            item.status === "completed" ? "btn-success" : "";
 
-            // Add to array and save
-            workItems.push(newWorkItem);
-            saveWorkItems();
+          // Days left display
+          let daysLeftDisplay = daysLeft;
+          if (daysLeft < 0) {
+            daysLeftDisplay = `<span style="color: red;">Overdue (${daysLeft})</span>`;
+          } else if (daysLeft === 0) {
+            daysLeftDisplay = '<span style="color: orange;">Due Today</span>';
+          } else if (daysLeft === 1) {
+            daysLeftDisplay = '<span style="color: orange;">Tomorrow</span>';
+          }
 
-            // Reset form
-            workForm.reset();
-            document.getElementById('dateOfIssue').value = new Date().toISOString().split('T')[0];
-            document.getElementById('studentName').value = 'Shivam Pandya';
-
-            // Show success message
-            showMessage('Work item added successfully!', 'success');
-
-            // Switch to dashboard tab
-            tabs[0].click();
-        }
-
-        // Save work items to localStorage
-        function saveWorkItems() {
-            localStorage.setItem('workItems', JSON.stringify(workItems));
-            renderWorkItems();
-        }
-
-        // Render work items in table
-        function renderWorkItems(filteredItems) {
-            // Clear existing rows
-            workTableBody.innerHTML = '';
-
-            // Items to display (filtered or all)
-            const itemsToShow = filteredItems || workItems;
-
-            // Sort by deadline (closest first)
-            itemsToShow.sort((a, b) => {
-                const dateA = new Date(a.dateOfDeadline);
-                const dateB = new Date(b.dateOfDeadline);
-                return dateA - dateB;
-            });
-
-            if (itemsToShow.length === 0) {
-                const emptyRow = document.createElement('tr');
-                emptyRow.innerHTML = '<td colspan="8" style="text-align: center;">No work items found</td>';
-                workTableBody.appendChild(emptyRow);
-                return;
-            }
-
-            // Create table rows
-            itemsToShow.forEach(item => {
-                const daysLeft = calculateDaysLeft(item.dateOfDeadline);
-                const subjectParts = item.subject.split('/');
-                const subjectName = subjectParts[0];
-                const subjectCode = subjectParts[1];
-
-                const row = document.createElement('tr');
-
-                // Status badge
-                let statusBadge = '';
-                if (item.status === 'not-started') {
-                    statusBadge = '<span class="badge badge-notstarted">Not Started</span>';
-                } else if (item.status === 'pending') {
-                    statusBadge = '<span class="badge badge-pending">Pending</span>';
-                } else if (item.status === 'completed') {
-                    statusBadge = '<span class="badge badge-completed">Completed</span>';
-                }
-
-                // Status button classes
-                const notStartedClass = item.status === 'not-started' ? 'btn-notstarted' : '';
-                const pendingClass = item.status === 'pending' ? 'btn-warning' : '';
-                const completedClass = item.status === 'completed' ? 'btn-success' : '';
-
-                // Days left display
-                let daysLeftDisplay = daysLeft;
-                if (daysLeft < 0) {
-                    daysLeftDisplay = `<span style="color: red;">Overdue (${daysLeft})</span>`;
-                } else if (daysLeft === 0) {
-                    daysLeftDisplay = '<span style="color: orange;">Due Today</span>';
-                } else if (daysLeft === 1) {
-                    daysLeftDisplay = '<span style="color: orange;">Tomorrow</span>';
-                }
-
-                row.innerHTML = `
+          row.innerHTML = `
     <td title="${subjectCode}">${subjectName}</td>
     <td>${item.workType}</td>
     <td>${item.workDescription}</td>
@@ -1162,441 +1305,479 @@
     <td>${statusBadge}</td>
     <td>
         <div class="btn-container">
-            <button class="change-status-btn ${notStartedClass} action-btn" data-id="${item.id}" data-status="not-started">Not Started</button>
-            <button class="change-status-btn ${pendingClass} action-btn" data-id="${item.id}" data-status="pending">Pending</button>
-            <button class="change-status-btn ${completedClass} action-btn" data-id="${item.id}" data-status="completed">Completed</button>
-            <button class="delete-work-btn btn-danger action-btn" data-id="${item.id}">Delete</button>
+            <button class="change-status-btn ${notStartedClass} action-btn" data-id="${
+            item.id
+          }" data-status="not-started">Not Started</button>
+            <button class="change-status-btn ${pendingClass} action-btn" data-id="${
+            item.id
+          }" data-status="pending">Pending</button>
+            <button class="change-status-btn ${completedClass} action-btn" data-id="${
+            item.id
+          }" data-status="completed">Completed</button>
+            <button class="delete-work-btn btn-danger action-btn" data-id="${
+              item.id
+            }">Delete</button>
         </div>
     </td>
 `;
 
-                workTableBody.appendChild(row);
-            });
+          workTableBody.appendChild(row);
+        });
 
-            // NOTE: We no longer add event listeners here
-            // Event delegation is used instead (see setupEventListeners)
+        // NOTE: We no longer add event listeners here
+        // Event delegation is used instead (see setupEventListeners)
+      }
+
+      // Format date for display
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = date.getDate().toString().padStart(2, "0");
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+      }
+
+      // Show message
+      function showMessage(message, type) {
+        messageEl.textContent = message;
+        messageEl.className = `message message-${type}`;
+        messageEl.style.display = "block";
+
+        // Auto-hide after 3 seconds
+        setTimeout(() => {
+          messageEl.style.display = "none";
+        }, 3000);
+      }
+
+      // Handle status change
+      function handleStatusChange(e) {
+        const workId = e.target.getAttribute("data-id");
+        const newStatus = e.target.getAttribute("data-status");
+        const workItem = workItems.find((item) => item.id === workId);
+
+        if (!workItem) {
+          console.error("Work item not found:", workId);
+          return;
         }
 
-        // Format date for display
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const day = date.getDate().toString().padStart(2, '0');
-            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
+        if (workItem.status === newStatus) {
+          return; // No change needed
         }
 
-        // Show message
-        function showMessage(message, type) {
-            messageEl.textContent = message;
-            messageEl.className = `message message-${type}`;
-            messageEl.style.display = 'block';
+        // Update modal
+        currentWorkItemId = workId;
+        currentNewStatus = newStatus;
 
-            // Auto-hide after 3 seconds
-            setTimeout(() => {
-                messageEl.style.display = 'none';
-            }, 3000);
+        let statusText = "not started";
+        if (newStatus === "pending") statusText = "pending";
+        if (newStatus === "completed") statusText = "completed";
+
+        statusModalText.textContent = `Are you sure you want to change the status to ${statusText}?`;
+
+        // Show modal
+        statusModal.style.display = "flex";
+      }
+
+      // Confirm status change
+      function confirmStatusChange() {
+        const workItem = workItems.find(
+          (item) => item.id === currentWorkItemId
+        );
+        if (workItem) {
+          workItem.status = currentNewStatus;
+          saveWorkItems();
+          showMessage(
+            `Status changed to ${currentNewStatus.replace("-", " ")}!`,
+            "success"
+          );
         }
 
-        // Handle status change
-        function handleStatusChange(e) {
-            const workId = e.target.getAttribute('data-id');
-            const newStatus = e.target.getAttribute('data-status');
-            const workItem = workItems.find(item => item.id === workId);
+        statusModal.style.display = "none";
+      }
 
-            if (!workItem) {
-                console.error('Work item not found:', workId);
-                return;
-            }
+      // Handle delete
+      function handleDelete(e) {
+        const workId = e.target.getAttribute("data-id");
+        currentWorkItemId = workId;
 
-            if (workItem.status === newStatus) {
-                return; // No change needed
-            }
+        // Show delete confirmation modal
+        deleteModal.style.display = "flex";
+      }
 
-            // Update modal
-            currentWorkItemId = workId;
-            currentNewStatus = newStatus;
+      // Confirm delete
+      function confirmDelete() {
+        workItems = workItems.filter((item) => item.id !== currentWorkItemId);
+        saveWorkItems();
+        showMessage("Work item deleted successfully!", "success");
 
-            let statusText = 'not started';
-            if (newStatus === 'pending') statusText = 'pending';
-            if (newStatus === 'completed') statusText = 'completed';
+        deleteModal.style.display = "none";
+      }
 
-            statusModalText.textContent = `Are you sure you want to change the status to ${statusText}?`;
+      // Handle search
+      function handleSearch() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
 
-            // Show modal
-            statusModal.style.display = 'flex';
+        if (!searchTerm) {
+          renderWorkItems(); // Show all if search is empty
+          return;
         }
 
-        // Confirm status change
-        function confirmStatusChange() {
-            const workItem = workItems.find(item => item.id === currentWorkItemId);
-            if (workItem) {
-                workItem.status = currentNewStatus;
-                saveWorkItems();
-                showMessage(`Status changed to ${currentNewStatus.replace('-', ' ')}!`, 'success');
-            }
+        const filteredItems = workItems.filter((item) => {
+          return (
+            item.subject.toLowerCase().includes(searchTerm) ||
+            item.workType.toLowerCase().includes(searchTerm) ||
+            item.workDescription.toLowerCase().includes(searchTerm) ||
+            item.issuerName.toLowerCase().includes(searchTerm)
+          );
+        });
 
-            statusModal.style.display = 'none';
+        renderWorkItems(filteredItems);
+
+        if (filteredItems.length === 0) {
+          showMessage("No matching items found.", "info");
+        }
+      }
+
+      // Filter work items
+      function filterWorkItems(filter) {
+        if (filter === "all") {
+          renderWorkItems();
+          return;
         }
 
-        // Handle delete
-        function handleDelete(e) {
-            const workId = e.target.getAttribute('data-id');
-            currentWorkItemId = workId;
+        const filteredItems = workItems.filter(
+          (item) => item.status === filter
+        );
+        renderWorkItems(filteredItems);
 
-            // Show delete confirmation modal
-            deleteModal.style.display = 'flex';
+        if (filteredItems.length === 0) {
+          showMessage(`No ${filter.replace("-", " ")} items found.`, "info");
+        }
+      }
+
+      // Handle add subject
+      function handleAddSubject() {
+        const name = newSubjectName.value.trim();
+        const code = newSubjectCode.value.trim();
+
+        if (!name || !code) {
+          showMessage("Please enter both subject name and code.", "error");
+          return;
         }
 
-        // Confirm delete
-        function confirmDelete() {
-            workItems = workItems.filter(item => item.id !== currentWorkItemId);
-            saveWorkItems();
-            showMessage('Work item deleted successfully!', 'success');
+        // Check for duplicates
+        const isDuplicate = subjects.some(
+          (subject) => subject.name === name || subject.code === code
+        );
 
-            deleteModal.style.display = 'none';
+        if (isDuplicate) {
+          showMessage(
+            "A subject with this name or code already exists.",
+            "error"
+          );
+          return;
         }
 
-        // Handle search
-        function handleSearch() {
-            const searchTerm = searchInput.value.toLowerCase().trim();
+        // Add new subject
+        subjects.push({ name, code });
+        saveSubjects();
 
-            if (!searchTerm) {
-                renderWorkItems(); // Show all if search is empty
-                return;
-            }
+        // Clear form
+        newSubjectName.value = "";
+        newSubjectCode.value = "";
 
-            const filteredItems = workItems.filter(item => {
-                return (
-                    item.subject.toLowerCase().includes(searchTerm) ||
-                    item.workType.toLowerCase().includes(searchTerm) ||
-                    item.workDescription.toLowerCase().includes(searchTerm) ||
-                    item.issuerName.toLowerCase().includes(searchTerm)
-                );
-            });
+        showMessage("Subject added successfully!", "success");
+      }
 
-            renderWorkItems(filteredItems);
+      // Handle edit subject
+      function handleEditSubject(e) {
+        const index = e.target.getAttribute("data-index");
+        currentSubjectIndex = index;
 
-            if (filteredItems.length === 0) {
-                showMessage('No matching items found.', 'info');
-            }
+        const subject = subjects[index];
+
+        // Fill form
+        editSubjectName.value = subject.name;
+        editSubjectCode.value = subject.code;
+
+        // Show modal
+        editSubjectModal.style.display = "flex";
+      }
+
+      // Save subject edit
+      function saveSubjectEdit() {
+        const name = editSubjectName.value.trim();
+        const code = editSubjectCode.value.trim();
+
+        if (!name || !code) {
+          showMessage("Please enter both subject name and code.", "error");
+          return;
         }
 
-        // Filter work items
-        function filterWorkItems(filter) {
-            if (filter === 'all') {
-                renderWorkItems();
-                return;
-            }
+        // Check for duplicates (excluding current subject)
+        const isDuplicate = subjects.some(
+          (subject, index) =>
+            index != currentSubjectIndex &&
+            (subject.name === name || subject.code === code)
+        );
 
-            const filteredItems = workItems.filter(item => item.status === filter);
-            renderWorkItems(filteredItems);
-
-            if (filteredItems.length === 0) {
-                showMessage(`No ${filter.replace('-', ' ')} items found.`, 'info');
-            }
+        if (isDuplicate) {
+          showMessage(
+            "A subject with this name or code already exists.",
+            "error"
+          );
+          return;
         }
 
-        // Handle add subject
-        function handleAddSubject() {
-            const name = newSubjectName.value.trim();
-            const code = newSubjectCode.value.trim();
+        // Get old subject value for updating work items
+        const oldSubject = `${subjects[currentSubjectIndex].name}/${subjects[currentSubjectIndex].code}`;
+        const newSubject = `${name}/${code}`;
 
-            if (!name || !code) {
-                showMessage('Please enter both subject name and code.', 'error');
-                return;
-            }
+        // Update subject
+        subjects[currentSubjectIndex] = { name, code };
+        saveSubjects();
 
-            // Check for duplicates
-            const isDuplicate = subjects.some(
-                subject => subject.name === name || subject.code === code
-            );
+        // Update any work items using this subject
+        workItems.forEach((item) => {
+          if (item.subject === oldSubject) {
+            item.subject = newSubject;
+          }
+        });
+        saveWorkItems();
 
-            if (isDuplicate) {
-                showMessage('A subject with this name or code already exists.', 'error');
-                return;
-            }
+        // Close modal
+        editSubjectModal.style.display = "none";
+        showMessage("Subject updated successfully!", "success");
+      }
 
-            // Add new subject
-            subjects.push({ name, code });
-            saveSubjects();
+      // Handle delete subject
+      function handleDeleteSubject(e) {
+        const index = e.target.getAttribute("data-index");
+        currentSubjectIndex = index;
 
-            // Clear form
-            newSubjectName.value = '';
-            newSubjectCode.value = '';
+        // Show confirmation modal
+        deleteSubjectModal.style.display = "flex";
+      }
 
-            showMessage('Subject added successfully!', 'success');
+      // Confirm delete subject
+      function confirmDeleteSubject() {
+        const subjectToDelete = `${subjects[currentSubjectIndex].name}/${subjects[currentSubjectIndex].code}`;
+
+        // Check if subject is in use
+        const isInUse = workItems.some(
+          (item) => item.subject === subjectToDelete
+        );
+
+        if (isInUse) {
+          showMessage(
+            "Cannot delete subject as it is used in work items.",
+            "error"
+          );
+          deleteSubjectModal.style.display = "none";
+          return;
         }
 
-        // Handle edit subject
-        function handleEditSubject(e) {
-            const index = e.target.getAttribute('data-index');
-            currentSubjectIndex = index;
+        // Remove subject
+        subjects.splice(currentSubjectIndex, 1);
+        saveSubjects();
 
-            const subject = subjects[index];
+        // Close modal
+        deleteSubjectModal.style.display = "none";
+        showMessage("Subject deleted successfully!", "success");
+      }
 
-            // Fill form
-            editSubjectName.value = subject.name;
-            editSubjectCode.value = subject.code;
+      // Save subjects
+      function saveSubjects() {
+        localStorage.setItem("subjects", JSON.stringify(subjects));
+        loadSubjectsDropdown();
+        renderSubjectList();
+      }
 
-            // Show modal
-            editSubjectModal.style.display = 'flex';
+      // Handle add work type
+      function handleAddWorkType() {
+        const type = newWorkType.value.trim();
+
+        if (!type) {
+          showMessage("Please enter a work type name.", "error");
+          return;
         }
 
-        // Save subject edit
-        function saveSubjectEdit() {
-            const name = editSubjectName.value.trim();
-            const code = editSubjectCode.value.trim();
-
-            if (!name || !code) {
-                showMessage('Please enter both subject name and code.', 'error');
-                return;
-            }
-
-            // Check for duplicates (excluding current subject)
-            const isDuplicate = subjects.some(
-                (subject, index) =>
-                    index != currentSubjectIndex && (subject.name === name || subject.code === code)
-            );
-
-            if (isDuplicate) {
-                showMessage('A subject with this name or code already exists.', 'error');
-                return;
-            }
-
-            // Get old subject value for updating work items
-            const oldSubject = `${subjects[currentSubjectIndex].name}/${subjects[currentSubjectIndex].code}`;
-            const newSubject = `${name}/${code}`;
-
-            // Update subject
-            subjects[currentSubjectIndex] = { name, code };
-            saveSubjects();
-
-            // Update any work items using this subject
-            workItems.forEach(item => {
-                if (item.subject === oldSubject) {
-                    item.subject = newSubject;
-                }
-            });
-            saveWorkItems();
-
-            // Close modal
-            editSubjectModal.style.display = 'none';
-            showMessage('Subject updated successfully!', 'success');
+        // Check for duplicates
+        if (workTypes.includes(type)) {
+          showMessage("This work type already exists.", "error");
+          return;
         }
 
-        // Handle delete subject
-        function handleDeleteSubject(e) {
-            const index = e.target.getAttribute('data-index');
-            currentSubjectIndex = index;
+        // Add new work type
+        workTypes.push(type);
+        saveWorkTypes();
 
-            // Show confirmation modal
-            deleteSubjectModal.style.display = 'flex';
+        // Clear form
+        newWorkType.value = "";
+
+        showMessage("Work type added successfully!", "success");
+      }
+
+      // Handle edit work type
+      function handleEditWorkType(e) {
+        const index = e.target.getAttribute("data-index");
+        currentWorkTypeIndex = index;
+
+        // Fill form
+        editWorkTypeName.value = workTypes[index];
+
+        // Show modal
+        editWorkTypeModal.style.display = "flex";
+      }
+
+      // Save work type edit
+      function saveWorkTypeEdit() {
+        const type = editWorkTypeName.value.trim();
+
+        if (!type) {
+          showMessage("Please enter a work type name.", "error");
+          return;
         }
 
-        // Confirm delete subject
-        function confirmDeleteSubject() {
-            const subjectToDelete = `${subjects[currentSubjectIndex].name}/${subjects[currentSubjectIndex].code}`;
+        // Check for duplicates (excluding current work type)
+        const isDuplicate = workTypes.some(
+          (workType, index) =>
+            index != currentWorkTypeIndex && workType === type
+        );
 
-            // Check if subject is in use
-            const isInUse = workItems.some(item => item.subject === subjectToDelete);
-
-            if (isInUse) {
-                showMessage('Cannot delete subject as it is used in work items.', 'error');
-                deleteSubjectModal.style.display = 'none';
-                return;
-            }
-
-            // Remove subject
-            subjects.splice(currentSubjectIndex, 1);
-            saveSubjects();
-
-            // Close modal
-            deleteSubjectModal.style.display = 'none';
-            showMessage('Subject deleted successfully!', 'success');
+        if (isDuplicate) {
+          showMessage("This work type already exists.", "error");
+          return;
         }
 
-        // Save subjects
-        function saveSubjects() {
-            localStorage.setItem('subjects', JSON.stringify(subjects));
-            loadSubjectsDropdown();
-            renderSubjectList();
+        // Get old work type for updating work items
+        const oldWorkType = workTypes[currentWorkTypeIndex];
+
+        // Update work type
+        workTypes[currentWorkTypeIndex] = type;
+        saveWorkTypes();
+
+        // Update any work items using this work type
+        workItems.forEach((item) => {
+          if (item.workType === oldWorkType) {
+            item.workType = type;
+          }
+        });
+        saveWorkItems();
+
+        // Close modal
+        editWorkTypeModal.style.display = "none";
+        showMessage("Work type updated successfully!", "success");
+      }
+
+      // Handle delete work type
+      function handleDeleteWorkType(e) {
+        const index = e.target.getAttribute("data-index");
+        currentWorkTypeIndex = index;
+
+        // Show confirmation modal
+        deleteWorkTypeModal.style.display = "flex";
+      }
+
+      // Confirm delete work type
+      function confirmDeleteWorkType() {
+        const typeToDelete = workTypes[currentWorkTypeIndex];
+
+        // Check if work type is in use
+        const isInUse = workItems.some(
+          (item) => item.workType === typeToDelete
+        );
+
+        if (isInUse) {
+          showMessage(
+            "Cannot delete work type as it is used in work items.",
+            "error"
+          );
+          deleteWorkTypeModal.style.display = "none";
+          return;
         }
 
-        // Handle add work type
-        function handleAddWorkType() {
-            const type = newWorkType.value.trim();
+        // Remove work type
+        workTypes.splice(currentWorkTypeIndex, 1);
+        saveWorkTypes();
 
-            if (!type) {
-                showMessage('Please enter a work type name.', 'error');
-                return;
-            }
+        // Close modal
+        deleteWorkTypeModal.style.display = "none";
+        showMessage("Work type deleted successfully!", "success");
+      }
 
-            // Check for duplicates
-            if (workTypes.includes(type)) {
-                showMessage('This work type already exists.', 'error');
-                return;
-            }
+      // Save work types
+      function saveWorkTypes() {
+        localStorage.setItem("workTypes", JSON.stringify(workTypes));
+        loadWorkTypesDropdown();
+        renderWorkTypeList();
+      }
 
-            // Add new work type
-            workTypes.push(type);
-            saveWorkTypes();
+      // IMP🚫
+      function deleteAllWorkItems() {
+        // Save current work items to deletedWorkItems array
+        deletedWorkItems = [...workItems];
+        localStorage.setItem(
+          "deletedWorkItems",
+          JSON.stringify(deletedWorkItems)
+        );
 
-            // Clear form
-            newWorkType.value = '';
+        // Clear the workItems array
+        workItems = [];
+        localStorage.setItem("workItems", JSON.stringify(workItems));
 
-            showMessage('Work type added successfully!', 'success');
-        }
+        // Re-render the work items table
+        renderWorkItems();
 
-        // Handle edit work type
-        function handleEditWorkType(e) {
-            const index = e.target.getAttribute('data-index');
-            currentWorkTypeIndex = index;
+        // Show a message indicating success
+        showMessage("All work items deleted successfully!", "success");
+      }
 
-            // Fill form
-            editWorkTypeName.value = workTypes[index];
+      //IMP🚫
+      function restoreWork() {
+        // Retrieve deleted work items from localStorage
+        deletedWorkItems =
+          JSON.parse(localStorage.getItem("deletedWorkItems")) || [];
 
-            // Show modal
-            editWorkTypeModal.style.display = 'flex';
-        }
+        // Add deleted work items back to workItems array
+        workItems = [...workItems, ...deletedWorkItems];
+        localStorage.setItem("workItems", JSON.stringify(workItems));
 
-        // Save work type edit
-        function saveWorkTypeEdit() {
-            const type = editWorkTypeName.value.trim();
+        // Clear deletedWorkItems array
+        deletedWorkItems = [];
+        localStorage.setItem(
+          "deletedWorkItems",
+          JSON.stringify(deletedWorkItems)
+        );
 
-            if (!type) {
-                showMessage('Please enter a work type name.', 'error');
-                return;
-            }
+        // Re-render the work items table
+        renderWorkItems();
 
-            // Check for duplicates (excluding current work type)
-            const isDuplicate = workTypes.some(
-                (workType, index) => index != currentWorkTypeIndex && workType === type
-            );
+        // Show a message indicating success
+        showMessage("Work items restored successfully!", "success");
+      }
 
-            if (isDuplicate) {
-                showMessage('This work type already exists.', 'error');
-                return;
-            }
+      //IMP🚫
+      // Clear all subjects
+      function clearSubjects() {
+        subjects = [];
+        localStorage.setItem("subjects", JSON.stringify(subjects));
+        loadSubjectsDropdown();
+        renderSubjectList();
+        showMessage("All subjects cleared successfully!", "success");
+      }
 
-            // Get old work type for updating work items
-            const oldWorkType = workTypes[currentWorkTypeIndex];
+      //IMP🚫
+      function clearWorkTypes() {
+        workTypes = [];
+        localStorage.setItem("workTypes", JSON.stringify(workTypes));
+        loadWorkTypesDropdown();
+        renderWorkTypeList();
+        showMessage("All work types cleared successfully!", "success");
+      }
 
-            // Update work type
-            workTypes[currentWorkTypeIndex] = type;
-            saveWorkTypes();
-
-            // Update any work items using this work type
-            workItems.forEach(item => {
-                if (item.workType === oldWorkType) {
-                    item.workType = type;
-                }
-            });
-            saveWorkItems();
-
-            // Close modal
-            editWorkTypeModal.style.display = 'none';
-            showMessage('Work type updated successfully!', 'success');
-        }
-
-        // Handle delete work type
-        function handleDeleteWorkType(e) {
-            const index = e.target.getAttribute('data-index');
-            currentWorkTypeIndex = index;
-
-            // Show confirmation modal
-            deleteWorkTypeModal.style.display = 'flex';
-        }
-
-        // Confirm delete work type
-        function confirmDeleteWorkType() {
-            const typeToDelete = workTypes[currentWorkTypeIndex];
-
-            // Check if work type is in use
-            const isInUse = workItems.some(item => item.workType === typeToDelete);
-
-            if (isInUse) {
-                showMessage('Cannot delete work type as it is used in work items.', 'error');
-                deleteWorkTypeModal.style.display = 'none';
-                return;
-            }
-
-            // Remove work type
-            workTypes.splice(currentWorkTypeIndex, 1);
-            saveWorkTypes();
-
-            // Close modal
-            deleteWorkTypeModal.style.display = 'none';
-            showMessage('Work type deleted successfully!', 'success');
-        }
-
-        // Save work types
-        function saveWorkTypes() {
-            localStorage.setItem('workTypes', JSON.stringify(workTypes));
-            loadWorkTypesDropdown();
-            renderWorkTypeList();
-        }
-
-        // IMP🚫
-        function deleteAllWorkItems() {
-            // Save current work items to deletedWorkItems array
-            deletedWorkItems = [...workItems];
-            localStorage.setItem('deletedWorkItems', JSON.stringify(deletedWorkItems));
-
-            // Clear the workItems array
-            workItems = [];
-            localStorage.setItem('workItems', JSON.stringify(workItems));
-
-            // Re-render the work items table
-            renderWorkItems();
-
-            // Show a message indicating success
-            showMessage('All work items deleted successfully!', 'success');
-        }
-
-        //IMP🚫
-        function restoreWork() {
-            // Retrieve deleted work items from localStorage
-            deletedWorkItems = JSON.parse(localStorage.getItem('deletedWorkItems')) || [];
-
-            // Add deleted work items back to workItems array
-            workItems = [...workItems, ...deletedWorkItems];
-            localStorage.setItem('workItems', JSON.stringify(workItems));
-
-            // Clear deletedWorkItems array
-            deletedWorkItems = [];
-            localStorage.setItem('deletedWorkItems', JSON.stringify(deletedWorkItems));
-
-            // Re-render the work items table
-            renderWorkItems();
-
-            // Show a message indicating success
-            showMessage('Work items restored successfully!', 'success');
-        }
-
-        //IMP🚫
-        // Clear all subjects
-        function clearSubjects() {
-            subjects = [];
-            localStorage.setItem('subjects', JSON.stringify(subjects));
-            loadSubjectsDropdown();
-            renderSubjectList();
-            showMessage('All subjects cleared successfully!', 'success');
-        }
-
-        //IMP🚫
-        function clearWorkTypes() {
-            workTypes = [];
-            localStorage.setItem('workTypes', JSON.stringify(workTypes));
-            loadWorkTypesDropdown();
-            renderWorkTypeList();
-            showMessage('All work types cleared successfully!', 'success');
-        }
-
-
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', init);
+      // Initialize app
+      document.addEventListener("DOMContentLoaded", init);
     </script>
-</body>
-
+  </body>
 </html>
