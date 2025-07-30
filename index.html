@@ -472,32 +472,12 @@
           font-size: 0.8rem;
         }
       }
-      #GUIDE a {
-        z-index: 1;
-        position: absolute;
-        bottom: 1rem;
-        right: 1rem;
-        background-color: var(--dark);
-        color: var(--light);
-        padding: 0.5rem 1rem;
-        border-radius: 50px;
-        text-decoration: none;
-        font-weight: bold;
-        transition: all 0.1s linear;
-        &:hover {
-          background-color: var(--dark-primary);
-          color: var(--light);
-        }
-      }
     </style>
   </head>
 
   <body>
     <header>
       <h1>Study Sync</h1>
-      <div id="GUIDE">
-        <a href="./USER_GUIDE.html">USER GUIDE</a>
-      </div>
     </header>
 
     <main>
@@ -615,6 +595,10 @@
                 id="dateOfDeadline"
                 required
               />
+              <div style="margin-top: 0.5rem; gap: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                <input type="checkbox" id="noDeadlineCheckbox" style="width: auto; margin-top: 0.2rem;"/>
+                <p>No Deadline</p>
+              </div>
             </div>
 
             <div class="form-group">
@@ -945,10 +929,6 @@
         const today = new Date().toISOString().split("T")[0];
         document.getElementById("dateOfIssue").value = today;
 
-        // Removed min value restrictions to allow earlier dates
-        // document.getElementById('dateOfIssue').min = today;
-        // document.getElementById('dateOfDeadline').min = today;
-
         // Load subjects and work types into dropdowns
         loadSubjectsDropdown();
         loadWorkTypesDropdown();
@@ -962,6 +942,21 @@
 
         // Set up event listeners
         setupEventListeners();
+
+        // No Deadline checkbox logic
+        const noDeadlineCheckbox =
+          document.getElementById("noDeadlineCheckbox");
+        const dateOfDeadlineInput = document.getElementById("dateOfDeadline");
+        noDeadlineCheckbox.addEventListener("change", function () {
+          if (this.checked) {
+            dateOfDeadlineInput.disabled = true;
+            dateOfDeadlineInput.value = "";
+            dateOfDeadlineInput.removeAttribute("required");
+          } else {
+            dateOfDeadlineInput.disabled = false;
+            dateOfDeadlineInput.setAttribute("required", "required");
+          }
+        });
       }
 
       // Load subjects into dropdown
@@ -1178,9 +1173,18 @@
         const workDescription =
           document.getElementById("workDescription").value;
         const dateOfIssue = document.getElementById("dateOfIssue").value;
-        const dateOfDeadline = document.getElementById("dateOfDeadline").value;
+        const dateOfDeadlineInput = document.getElementById("dateOfDeadline");
+        const noDeadlineCheckbox =
+          document.getElementById("noDeadlineCheckbox");
         const issuerName = document.getElementById("issuerName").value;
         const studentName = document.getElementById("studentName").value;
+
+        let dateOfDeadline = dateOfDeadlineInput.value;
+        let hasNoDeadline = false;
+        if (noDeadlineCheckbox.checked) {
+          dateOfDeadline = null;
+          hasNoDeadline = true;
+        }
 
         // Validate form
         if (
@@ -1188,7 +1192,7 @@
           workType === "Not Valid" ||
           !workDescription ||
           !dateOfIssue ||
-          !dateOfDeadline ||
+          (!dateOfDeadline && !hasNoDeadline) ||
           !issuerName ||
           !studentName
         ) {
@@ -1203,11 +1207,12 @@
           workType,
           workDescription,
           dateOfIssue,
-          dateOfDeadline,
+          dateOfDeadline: dateOfDeadline,
           issuerName,
           studentName,
           status: "not-started",
           createdAt: new Date().toISOString(),
+          noDeadline: hasNoDeadline,
         };
 
         // Add to array and save
@@ -1220,6 +1225,9 @@
           .toISOString()
           .split("T")[0];
         document.getElementById("studentName").value = "Shivam Pandya";
+        dateOfDeadlineInput.disabled = false;
+        dateOfDeadlineInput.setAttribute("required", "required");
+        noDeadlineCheckbox.checked = false;
 
         // Show success message
         showMessage("Work item added successfully!", "success");
@@ -1242,8 +1250,11 @@
         // Items to display (filtered or all)
         const itemsToShow = filteredItems || workItems;
 
-        // Sort by deadline (closest first)
+        // Sort: items with deadline first (by date), then no deadline at the end
         itemsToShow.sort((a, b) => {
+          if (a.noDeadline && !b.noDeadline) return 1;
+          if (!a.noDeadline && b.noDeadline) return -1;
+          if (a.noDeadline && b.noDeadline) return 0;
           const dateA = new Date(a.dateOfDeadline);
           const dateB = new Date(b.dateOfDeadline);
           return dateA - dateB;
@@ -1259,7 +1270,10 @@
 
         // Create table rows
         itemsToShow.forEach((item) => {
-          const daysLeft = calculateDaysLeft(item.dateOfDeadline);
+          let daysLeft = null;
+          if (!item.noDeadline && item.dateOfDeadline) {
+            daysLeft = calculateDaysLeft(item.dateOfDeadline);
+          }
           const subjectParts = item.subject.split("/");
           const subjectName = subjectParts[0];
           const subjectCode = subjectParts[1];
@@ -1286,37 +1300,43 @@
             item.status === "completed" ? "btn-success" : "";
 
           // Days left display
-          let daysLeftDisplay = daysLeft;
-          if (daysLeft < 0) {
-            daysLeftDisplay = `<span style="color: red;">Overdue (${daysLeft})</span>`;
-          } else if (daysLeft === 0) {
-            daysLeftDisplay = '<span style="color: orange;">Due Today</span>';
-          } else if (daysLeft === 1) {
-            daysLeftDisplay = '<span style="color: orange;">Tomorrow</span>';
+          let daysLeftDisplay = "-";
+          if (item.noDeadline) {
+            daysLeftDisplay = '<span style="color: #888;">No Deadline</span>';
+          } else if (daysLeft !== null) {
+            if (daysLeft < 0) {
+              daysLeftDisplay = `<span style="color: red;">Overdue (${daysLeft})</span>`;
+            } else if (daysLeft === 0) {
+              daysLeftDisplay = '<span style="color: orange;">Due Today</span>';
+            } else if (daysLeft === 1) {
+              daysLeftDisplay = '<span style="color: orange;">Tomorrow</span>';
+            } else {
+              daysLeftDisplay = daysLeft;
+            }
+          }
+
+          // Deadline display
+          let deadlineDisplay = "-";
+          if (item.noDeadline) {
+            deadlineDisplay = '<span style="color: #888;">No Deadline</span>';
+          } else if (item.dateOfDeadline) {
+            deadlineDisplay = formatDate(item.dateOfDeadline);
           }
 
           row.innerHTML = `
     <td title="${subjectCode}">${subjectName}</td>
     <td>${item.workType}</td>
     <td>${item.workDescription}</td>
-    <td>${formatDate(item.dateOfDeadline)}</td>
+    <td>${deadlineDisplay}</td>
     <td>${daysLeftDisplay}</td>
-    <td>${item.issuerName}</td> <!-- Add this new cell -->
+    <td>${item.issuerName}</td>
     <td>${statusBadge}</td>
     <td>
         <div class="btn-container">
-            <button class="change-status-btn ${notStartedClass} action-btn" data-id="${
-            item.id
-          }" data-status="not-started">Not Started</button>
-            <button class="change-status-btn ${pendingClass} action-btn" data-id="${
-            item.id
-          }" data-status="pending">Pending</button>
-            <button class="change-status-btn ${completedClass} action-btn" data-id="${
-            item.id
-          }" data-status="completed">Completed</button>
-            <button class="delete-work-btn btn-danger action-btn" data-id="${
-              item.id
-            }">Delete</button>
+            <button class="change-status-btn ${notStartedClass} action-btn" data-id="${item.id}" data-status="not-started">Not Started</button>
+            <button class="change-status-btn ${pendingClass} action-btn" data-id="${item.id}" data-status="pending">Pending</button>
+            <button class="change-status-btn ${completedClass} action-btn" data-id="${item.id}" data-status="completed">Completed</button>
+            <button class="delete-work-btn btn-danger action-btn" data-id="${item.id}">Delete</button>
         </div>
     </td>
 `;
@@ -1778,6 +1798,36 @@
 
       // Initialize app
       document.addEventListener("DOMContentLoaded", init);
+
+      // Keyboard shortcuts for tab switching
+      document.addEventListener("keydown", function (e) {
+        if (!e.shiftKey) return;
+        // Only trigger if not typing in an input or textarea
+        const activeTag = document.activeElement.tagName.toLowerCase();
+        if (activeTag === "input" || activeTag === "textarea") return;
+        switch (e.key.toLowerCase()) {
+          case "a":
+            // Shift+A: Dashboard
+            e.preventDefault();
+            document.querySelector('.tab[data-tab="dashboard"]').click();
+            break;
+          case "b":
+            // Shift+B: Add Work
+            e.preventDefault();
+            document.querySelector('.tab[data-tab="add-work"]').click();
+            break;
+          case "c":
+            // Shift+C: Edit Subjects
+            e.preventDefault();
+            document.querySelector('.tab[data-tab="edit-subject"]').click();
+            break;
+          case "d":
+            // Shift+D: Edit Work Type
+            e.preventDefault();
+            document.querySelector('.tab[data-tab="edit-worktype"]').click();
+            break;
+        }
+      });
     </script>
   </body>
 </html>
