@@ -201,6 +201,14 @@
         }
       }
 
+      .btn-info {
+        background-color: #999999;
+      }
+
+      .btn-info:hover {
+        background-color: #666666;
+      }
+
       .btn-container {
         display: flex;
         gap: 0.5rem;
@@ -351,6 +359,8 @@
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         position: relative;
         animation: modalFadeIn 0.3s;
+        max-height: 90vh;
+        overflow-y: auto;
       }
 
       @keyframes modalFadeIn {
@@ -595,8 +605,20 @@
                 id="dateOfDeadline"
                 required
               />
-              <div style="margin-top: 0.5rem; gap: 0.5rem; display: flex; align-items: center; justify-content: center;">
-                <input type="checkbox" id="noDeadlineCheckbox" style="width: auto; margin-top: 0.2rem;"/>
+              <div
+                style="
+                  margin-top: 0.5rem;
+                  gap: 0.5rem;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <input
+                  type="checkbox"
+                  id="noDeadlineCheckbox"
+                  style="width: auto; margin-top: 0.2rem"
+                />
                 <p>No Deadline</p>
               </div>
             </div>
@@ -717,6 +739,87 @@
           <button id="confirmDeleteBtn" class="btn-danger">Delete</button>
           <button id="cancelDeleteBtn">Cancel</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Edit Work Modal -->
+    <div id="editWorkModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2 style="margin-bottom: 10px">Edit Work Item</h2>
+        <form id="editWorkForm">
+          <div class="form-group">
+            <label for="editSubject">Subject Name/Code:</label>
+            <select id="editSubject" required>
+              <option value="Not Valid">Select Subject</option>
+              <!-- Subjects will be loaded dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="editWorkbookType">Work Type:</label>
+            <select id="editWorkbookType" required>
+              <option value="Not Valid">Select Workbook Type</option>
+              <!-- Work types will be loaded dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="editWorkDescription">Work:</label>
+            <textarea id="editWorkDescription" rows="4" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="editDateOfIssue">Date of Issue:</label>
+            <input
+              type="date"
+              style="text-transform: uppercase"
+              id="editDateOfIssue"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="editDateOfDeadline">Date of Deadline:</label>
+            <input
+              type="date"
+              style="text-transform: uppercase"
+              id="editDateOfDeadline"
+              required
+            />
+            <div
+              style="
+                margin-top: 0.5rem;
+                gap: 0.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            >
+              <input
+                type="checkbox"
+                id="editNoDeadlineCheckbox"
+                style="width: auto; margin-top: 0.2rem"
+              />
+              <p>No Deadline</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="editIssuerName">Issuer Faculty Name:</label>
+            <input type="text" id="editIssuerName" required />
+          </div>
+
+          <div class="form-group">
+            <label for="editStudentName">Name of Student:</label>
+            <input type="text" id="editStudentName" required />
+          </div>
+
+          <div class="btn-container">
+            <button type="submit">Save Changes</button>
+            <button type="button" id="cancelEditBtn">Cancel</button>
+          </div>
+        </form>
       </div>
     </div>
 
@@ -861,6 +964,23 @@
       const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
       const closeButtons = document.querySelectorAll(".close-btn");
 
+      // Edit Work Modal elements
+      const editWorkModal = document.getElementById("editWorkModal");
+      const editWorkForm = document.getElementById("editWorkForm");
+      const editSubject = document.getElementById("editSubject");
+      const editWorkbookType = document.getElementById("editWorkbookType");
+      const editWorkDescription = document.getElementById(
+        "editWorkDescription"
+      );
+      const editDateOfIssue = document.getElementById("editDateOfIssue");
+      const editDateOfDeadline = document.getElementById("editDateOfDeadline");
+      const editNoDeadlineCheckbox = document.getElementById(
+        "editNoDeadlineCheckbox"
+      );
+      const editIssuerName = document.getElementById("editIssuerName");
+      const editStudentName = document.getElementById("editStudentName");
+      const cancelEditBtn = document.getElementById("cancelEditBtn");
+
       // Subject edit elements
       const subjectList = document.getElementById("subjectList");
       const newSubjectName = document.getElementById("newSubjectName");
@@ -907,6 +1027,7 @@
       let currentNewStatus = null;
       let currentSubjectIndex = null;
       let currentWorkTypeIndex = null;
+      let currentEditWorkId = null;
 
       // Function to calculate days left
       function calculateDaysLeft(deadlineDate) {
@@ -943,7 +1064,7 @@
         // Set up event listeners
         setupEventListeners();
 
-        // No Deadline checkbox logic
+        // No Deadline checkbox logic for add form
         const noDeadlineCheckbox =
           document.getElementById("noDeadlineCheckbox");
         const dateOfDeadlineInput = document.getElementById("dateOfDeadline");
@@ -957,12 +1078,43 @@
             dateOfDeadlineInput.setAttribute("required", "required");
           }
         });
+
+        // No Deadline checkbox logic for edit form
+        editNoDeadlineCheckbox.addEventListener("change", function () {
+          if (this.checked) {
+            editDateOfDeadline.disabled = true;
+            editDateOfDeadline.value = "";
+            editDateOfDeadline.removeAttribute("required");
+          } else {
+            editDateOfDeadline.disabled = false;
+            editDateOfDeadline.setAttribute("required", "required");
+          }
+        });
+
+        // Auto-detect no deadline in edit form when date changes
+        editDateOfDeadline.addEventListener("change", function () {
+          if (this.value === "0000-01-01" || this.value === "") {
+            editNoDeadlineCheckbox.checked = true;
+            this.disabled = true;
+            this.value = "";
+            this.removeAttribute("required");
+          } else {
+            editNoDeadlineCheckbox.checked = false;
+            this.disabled = false;
+            this.setAttribute("required", "required");
+          }
+        });
       }
 
       // Load subjects into dropdown
       function loadSubjectsDropdown() {
         const subjectSelect = document.getElementById("subject");
+        const editSubjectSelect = document.getElementById("editSubject");
+
+        // Clear existing options
         subjectSelect.innerHTML =
+          '<option value="Not Valid">Select Subject</option>';
+        editSubjectSelect.innerHTML =
           '<option value="Not Valid">Select Subject</option>';
 
         subjects.forEach((subject) => {
@@ -970,13 +1122,22 @@
           option.value = `${subject.name}/${subject.code}`;
           option.textContent = `${subject.name}/${subject.code}`;
           subjectSelect.appendChild(option);
+
+          // Clone for edit dropdown
+          const editOption = option.cloneNode(true);
+          editSubjectSelect.appendChild(editOption);
         });
       }
 
       // Load work types into dropdown
       function loadWorkTypesDropdown() {
         const workTypeSelect = document.getElementById("workbookType");
+        const editWorkTypeSelect = document.getElementById("editWorkbookType");
+
+        // Clear existing options
         workTypeSelect.innerHTML =
+          '<option value="Not Valid">Select Workbook Type</option>';
+        editWorkTypeSelect.innerHTML =
           '<option value="Not Valid">Select Workbook Type</option>';
 
         workTypes.forEach((type) => {
@@ -984,6 +1145,10 @@
           option.value = type;
           option.textContent = type;
           workTypeSelect.appendChild(option);
+
+          // Clone for edit dropdown
+          const editOption = option.cloneNode(true);
+          editWorkTypeSelect.appendChild(editOption);
         });
       }
 
@@ -1069,6 +1234,9 @@
         // Work form submission
         workForm.addEventListener("submit", handleWorkFormSubmit);
 
+        // Edit work form submission
+        editWorkForm.addEventListener("submit", handleEditWorkFormSubmit);
+
         // Search functionality
         searchBtn.addEventListener("click", handleSearch);
         searchInput.addEventListener("keyup", (e) => {
@@ -1092,6 +1260,7 @@
           btn.addEventListener("click", () => {
             statusModal.style.display = "none";
             deleteModal.style.display = "none";
+            editWorkModal.style.display = "none";
             editSubjectModal.style.display = "none";
             editWorkTypeModal.style.display = "none";
             deleteSubjectModal.style.display = "none";
@@ -1109,6 +1278,11 @@
         confirmDeleteBtn.addEventListener("click", confirmDelete);
         cancelDeleteBtn.addEventListener("click", () => {
           deleteModal.style.display = "none";
+        });
+
+        // Edit work modal buttons
+        cancelEditBtn.addEventListener("click", () => {
+          editWorkModal.style.display = "none";
         });
 
         // Subject buttons
@@ -1140,6 +1314,7 @@
         window.addEventListener("click", (e) => {
           if (e.target === statusModal) statusModal.style.display = "none";
           if (e.target === deleteModal) deleteModal.style.display = "none";
+          if (e.target === editWorkModal) editWorkModal.style.display = "none";
           if (e.target === editSubjectModal)
             editSubjectModal.style.display = "none";
           if (e.target === editWorkTypeModal)
@@ -1160,6 +1335,11 @@
           // Handle delete buttons
           if (e.target.classList.contains("delete-work-btn")) {
             handleDelete(e);
+          }
+
+          // Handle edit buttons
+          if (e.target.classList.contains("edit-work-btn")) {
+            handleEditWork(e);
           }
         });
       }
@@ -1234,6 +1414,100 @@
 
         // Switch to dashboard tab
         tabs[0].click();
+      }
+
+      // Handle edit work form submission
+      function handleEditWorkFormSubmit(e) {
+        e.preventDefault();
+
+        const subject = editSubject.value;
+        const workType = editWorkbookType.value;
+        const workDescription = editWorkDescription.value;
+        const dateOfIssue = editDateOfIssue.value;
+        const issuerName = editIssuerName.value;
+        const studentName = editStudentName.value;
+
+        let dateOfDeadline = editDateOfDeadline.value;
+        let hasNoDeadline = editNoDeadlineCheckbox.checked;
+
+        if (hasNoDeadline) {
+          dateOfDeadline = null;
+        }
+
+        // Validate form
+        if (
+          subject === "Not Valid" ||
+          workType === "Not Valid" ||
+          !workDescription ||
+          !dateOfIssue ||
+          (!dateOfDeadline && !hasNoDeadline) ||
+          !issuerName ||
+          !studentName
+        ) {
+          showMessage("Please fill all fields correctly.", "error");
+          return;
+        }
+
+        // Find and update the work item
+        const workItemIndex = workItems.findIndex(
+          (item) => item.id === currentEditWorkId
+        );
+        if (workItemIndex !== -1) {
+          workItems[workItemIndex] = {
+            ...workItems[workItemIndex],
+            subject,
+            workType,
+            workDescription,
+            dateOfIssue,
+            dateOfDeadline,
+            issuerName,
+            studentName,
+            noDeadline: hasNoDeadline,
+          };
+
+          saveWorkItems();
+          showMessage("Work item updated successfully!", "success");
+          editWorkModal.style.display = "none";
+        } else {
+          showMessage("Error: Work item not found.", "error");
+        }
+      }
+
+      // Handle edit work
+      function handleEditWork(e) {
+        const workId = e.target.getAttribute("data-id");
+        const workItem = workItems.find((item) => item.id === workId);
+
+        if (!workItem) {
+          showMessage("Error: Work item not found.", "error");
+          return;
+        }
+
+        currentEditWorkId = workId;
+
+        // Populate the edit form
+        editSubject.value = workItem.subject;
+        editWorkbookType.value = workItem.workType;
+        editWorkDescription.value = workItem.workDescription;
+        editDateOfIssue.value = workItem.dateOfIssue;
+        editIssuerName.value = workItem.issuerName;
+        editStudentName.value = workItem.studentName;
+
+        // Handle deadline
+        if (workItem.noDeadline) {
+          editNoDeadlineCheckbox.checked = true;
+          editDateOfDeadline.disabled = true;
+          editDateOfDeadline.value = "";
+          editDateOfDeadline.removeAttribute("required");
+        } else {
+          editNoDeadlineCheckbox.checked = false;
+          editDateOfDeadline.disabled = false;
+          editDateOfDeadline.value = workItem.dateOfDeadline || "";
+          editDateOfDeadline.setAttribute("required", "required");
+        }
+
+        // Show the modal
+        editWorkModal.style.display = "flex";
       }
 
       // Save work items to localStorage
@@ -1336,6 +1610,7 @@
             <button class="change-status-btn ${notStartedClass} action-btn" data-id="${item.id}" data-status="not-started">Not Started</button>
             <button class="change-status-btn ${pendingClass} action-btn" data-id="${item.id}" data-status="pending">Pending</button>
             <button class="change-status-btn ${completedClass} action-btn" data-id="${item.id}" data-status="completed">Completed</button>
+            <button class="edit-work-btn btn-info action-btn" data-id="${item.id}">Edit</button>
             <button class="delete-work-btn btn-danger action-btn" data-id="${item.id}">Delete</button>
         </div>
     </td>
