@@ -2110,6 +2110,16 @@
         }
       });
 
+      function formatExcelDate(dateString) {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        if (isNaN(date)) return "";
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+      }
+      
       // IMP🚫
       async function ExportToExcel() {
         // Load xlsx library dynamically if not present
@@ -2122,10 +2132,11 @@
           });
         }
 
-        // Table header
+        // Table header (now includes Work Type)
         const header = [
           "Subject Name",
           "Subject Code",
+          "Work Type",
           "Work",
           "Date of Issue",
           "Date of Deadline",
@@ -2139,6 +2150,7 @@
           const subjectParts = item.subject.split("/");
           const subjectName = subjectParts[0] || "";
           const subjectCode = subjectParts[1] || "";
+          const workType = item.workType || "";
           const work = item.workDescription || "";
           const dateOfIssue = formatExcelDate(item.dateOfIssue);
           const dateOfDeadline = item.noDeadline
@@ -2152,6 +2164,7 @@
           return [
             subjectName,
             subjectCode,
+            workType,
             work,
             dateOfIssue,
             dateOfDeadline,
@@ -2176,11 +2189,12 @@
             if (!ws[cell_ref]) continue;
             ws[cell_ref].s = ws[cell_ref].s || {};
             ws[cell_ref].s.font = { name: "Cambria" };
+            if (R === 0) ws[cell_ref].s.font.bold = true; // Bold header
           }
         }
 
         // Add autofilter to header row (row 1, zero-based index 0)
-        ws["!autofilter"] = { ref: `A1:H${1 + rows.length}` };
+        ws["!autofilter"] = { ref: `A1:I${1 + rows.length}` };
 
         // Create workbook
         const wb = XLSX.utils.book_new();
@@ -2199,17 +2213,6 @@
 
         // Export file
         XLSX.writeFile(wb, filename);
-      }
-
-      // Helper to format date as DD-MM-YYYY
-      function formatExcelDate(dateString) {
-        if (!dateString) return "";
-        const date = new Date(dateString);
-        if (isNaN(date)) return "";
-        const day = String(date.getDate()).padStart(2, "0");
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const year = date.getFullYear();
-        return `${day}-${month}-${year}`;
       }
     </script>
   </body>
