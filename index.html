@@ -499,6 +499,10 @@
         <button class="tab" data-tab="add-work">Add Work</button>
         <button class="tab" data-tab="edit-subject">Edit Subjects</button>
         <button class="tab" data-tab="edit-worktype">Edit Work Type</button>
+        <button class="tab" id="exdownload" onclick="ExportToExcel()">
+          <img src="./excel.svg" alt="Export to Excel" style="height: 1.6rem" />
+          <img src="./Download.svg" alt="Download" style="height: 1.6rem" />
+        </button>
       </div>
 
       <div id="message" class="message"></div>
@@ -901,7 +905,6 @@
         </div>
       </div>
     </div>
-
     <script>
       // Store data in localStorage
       let workItems = JSON.parse(localStorage.getItem("workItems")) || [];
@@ -2106,6 +2109,108 @@
             break;
         }
       });
+
+      // IMP🚫
+      async function ExportToExcel() {
+        // Load xlsx library dynamically if not present
+        if (typeof XLSX === "undefined") {
+          const script = document.createElement("script");
+          script.src = "./xlsx.full.min.js";
+          document.head.appendChild(script);
+          await new Promise((resolve) => {
+            script.onload = resolve;
+          });
+        }
+
+        // Table header
+        const header = [
+          "Subject Name",
+          "Subject Code",
+          "Work",
+          "Date of Issue",
+          "Date of Deadline",
+          "Status",
+          "Faculty",
+          "Name of Student",
+        ];
+
+        // Prepare data rows
+        const rows = workItems.map((item) => {
+          const subjectParts = item.subject.split("/");
+          const subjectName = subjectParts[0] || "";
+          const subjectCode = subjectParts[1] || "";
+          const work = item.workDescription || "";
+          const dateOfIssue = formatExcelDate(item.dateOfIssue);
+          const dateOfDeadline = item.noDeadline
+            ? "No Deadline"
+            : formatExcelDate(item.dateOfDeadline);
+          let status = "Not Started";
+          if (item.status === "pending") status = "Pending";
+          if (item.status === "completed") status = "Completed";
+          const faculty = item.issuerName || "";
+          const student = item.studentName || "";
+          return [
+            subjectName,
+            subjectCode,
+            work,
+            dateOfIssue,
+            dateOfDeadline,
+            status,
+            faculty,
+            student,
+          ];
+        });
+
+        // Combine all rows
+        const sheetData = [header, ...rows];
+
+        // Create worksheet and workbook
+        const ws = XLSX.utils.aoa_to_sheet(sheetData);
+
+        // Set Cambria font for all cells
+        const range = XLSX.utils.decode_range(ws["!ref"]);
+        for (let R = range.s.r; R <= range.e.r; ++R) {
+          for (let C = range.s.c; C <= range.e.c; ++C) {
+            const cell_address = { c: C, r: R };
+            const cell_ref = XLSX.utils.encode_cell(cell_address);
+            if (!ws[cell_ref]) continue;
+            ws[cell_ref].s = ws[cell_ref].s || {};
+            ws[cell_ref].s.font = { name: "Cambria" };
+          }
+        }
+
+        // Add autofilter to header row (row 1, zero-based index 0)
+        ws["!autofilter"] = { ref: `A1:H${1 + rows.length}` };
+
+        // Create workbook
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Study Sync");
+
+        // Generate filename: DD-MM-YYYY_HH-MM-SS_StudySync.xlsx
+        const now = new Date();
+        const pad = (n) => n.toString().padStart(2, "0");
+        const dateStr = `${pad(now.getDate())}-${pad(
+          now.getMonth() + 1
+        )}-${now.getFullYear()}`;
+        const timeStr = `${pad(now.getHours())}-${pad(now.getMinutes())}-${pad(
+          now.getSeconds()
+        )}`;
+        const filename = `${dateStr}_${timeStr}_StudySync.xlsx`;
+
+        // Export file
+        XLSX.writeFile(wb, filename);
+      }
+
+      // Helper to format date as DD-MM-YYYY
+      function formatExcelDate(dateString) {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        if (isNaN(date)) return "";
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const year = date.getFullYear();
+        return `${day}-${month}-${year}`;
+      }
     </script>
   </body>
 </html>
